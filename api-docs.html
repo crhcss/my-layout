@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@crhcss/my-layout · API 文档 v1.1.0</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; color: #303133; background: #fff; display: flex; min-height: 100vh; }
+aside { flex: 0 0 230px; background: #f7f8fa; border-right: 1px solid #e4e7ed; padding: 18px 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.brand { padding: 0 18px 14px; font-size: 15px; font-weight: 600; color: #409eff; }
+.brand small { display: block; margin-top: 2px; font-weight: 400; color: #909399; font-size: 11px; }
+.nav-title { padding: 4px 18px 8px; font-size: 11px; color: #909399; letter-spacing: 1px; text-transform: uppercase; }
+.nav-item { display: block; padding: 8px 18px; font-size: 13px; color: #303133; text-decoration: none; border-left: 3px solid transparent; }
+.nav-item:hover { background: #eef2f7; color: #409eff; }
+main-wrap { flex: 1; }
+.wrap { flex: 1; min-width: 0; }
+.doc { max-width: 980px; padding: 34px 40px 60px; border-bottom: 1px solid #ebeef5; }
+.doc h2 { color: #409eff; font-size: 22px; margin-bottom: 8px; }
+.desc { color: #606266; font-size: 13px; line-height: 1.8; margin-bottom: 6px; }
+h3 { margin: 24px 0 10px; padding-bottom: 6px; font-size: 15px; border-bottom: 1px solid #e4e7ed; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; line-height: 1.6; }
+th, td { padding: 8px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid #ebeef5; }
+th { background: #f7f8fa; color: #606266; font-weight: 500; font-size: 12px; }
+tr:hover td { background: #f5f7fa; }
+code { display: inline-block; padding: 1px 6px; background: #f0f2f5; color: #c7254e; border-radius: 3px; font-family: Consolas, Menlo, monospace; font-size: 12px; }
+.dim { color: #909399; }
+.c-name { width: 26%; } .c-type { width: 16%; } .c-def { width: 14%; } .c-payload { width: 22%; } .c-sig { width: 44%; word-break: break-all; } .c-ret { width: 14%; }
+.top { position: fixed; right: 22px; bottom: 22px; padding: 7px 13px; font-size: 12px; color: #409eff; background: #fff; border: 1px solid #d9ecff; border-radius: 14px; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+</style>
+</head>
+<body id="top">
+<aside>
+  <div class="brand">@crhcss/my-layout<small>API 文档 v1.1.0</small></div>
+  <div class="nav-title">组件 / 模块</div>
+  <a class="nav-item" href="#myborderlayout">MyBorderLayout</a>
+<a class="nav-item" href="#mymainframe">MyMainFrame</a>
+<a class="nav-item" href="#mypanel">MyPanel</a>
+<a class="nav-item" href="#mypanelcontent">MyPanelContent</a>
+<a class="nav-item" href="#mytabs">MyTabs</a>
+<a class="nav-item" href="#mysplitter">MySplitter</a>
+<a class="nav-item" href="#myfloatpanel">MyFloatPanel</a>
+<a class="nav-item" href="#mygridlayout">MyGridLayout</a>
+<a class="nav-item" href="#composables-组合式函数-">Composables（组合式函数）</a>
+</aside>
+<div class="wrap">
+  <main class="doc" id="myborderlayout">
+    <h2>MyBorderLayout</h2>
+    <p class="desc">核心 Border 布局容器。五区（north / west / center / east / south）CSS Grid 实现，支持嵌套布局、区域优先级、最大化（center / layout / page）、面板导航、区域悬浮（item.float）与区域面板多标签（item.tab）。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>layoutId</code></td><td class="dim">String</td><td><code>'BorderLayout'</code></td><td>布局唯一标识；嵌套布局通过 layoutId 体系定位。</td></tr><tr><td><code>parentLayoutId</code></td><td class="dim">String</td><td><code>''</code></td><td>父布局 id（子布局自动带出，用于向上追溯）。</td></tr><tr><td><code>regionLevel</code></td><td class="dim">String | Number</td><td><code>'ns'</code></td><td>区域优先级：ns(上下左右) / ew(左右上下) / nws(上左下右) / nwe(上左右下)，也接受 1/2/3/4 与全称。</td></tr><tr><td><code>maxType</code></td><td class="dim">String</td><td><code>'center'</code></td><td>全局默认最大化类型：center(覆盖自身+中间) / layout(整个布局) / page(整个页面+全屏)。优先级：item.maxType &gt; regions[region].maxType &gt; 全局 maxType &gt; &quot;center&quot;。</td></tr><tr><td><code>animate</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否启用尺寸 / 最大化过渡动画。</td></tr><tr><td><code>animationDuration</code></td><td class="dim">Number</td><td><code>260</code></td><td>动画时长（毫秒）。</td></tr><tr><td><code>regions</code></td><td class="dim">Object</td><td><code>{}</code></td><td>区域配置：{ north:{active,panels,show}, west:{...}, center:{...}, east:{...}, south:{...} }。每个 panel item 参数集 ≈ MyPanel，另加布局参数 float（区域悬浮在中间区域之上）/ tab（{ items, active, position, closable, hasTool, contextmenu, menu, titleVertical } 多标签）。</td></tr><tr><td><code>autoPanel</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>true 时区域自动包一层 MyPanel，插槽内容作为面板 body。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题：空值继承父级；light / light-blue / dark。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:regions</code></td><td class="dim">Object</td><td>regions 变化（v-model:regions）。</td></tr><tr><td><code>update:sizes</code></td><td class="dim">Object</td><td>区域尺寸变化（拖拽时）。</td></tr><tr><td><code>show</code></td><td class="dim">{ region, name, layoutId, tab? }</td><td>面板 / 区域显示 —— 打开 / 激活面板、展开区域都走这里；tab 相关动作附 tab（标签 name）。</td></tr><tr><td><code>hide</code></td><td class="dim">{ region, name, layoutId }</td><td>面板 / 区域隐藏 —— 面板最小化按钮也走这里，区域随之收起。</td></tr><tr><td><code>max</code></td><td class="dim">{ region, name, layoutId, mode }</td><td>区域最大化。</td></tr><tr><td><code>restore</code></td><td class="dim">{ region, name, layoutId }</td><td>区域还原。</td></tr><tr><td><code>close</code></td><td class="dim">{ region, name, layoutId, tab? }</td><td>面板关闭并移除；带 tab 时表示关闭的是该标签（面板保留）。</td></tr><tr><td><code>split</code></td><td class="dim">{ region, name, layoutId, size }</td><td>分割条拖拽移动。</td></tr><tr><td><code>refresh</code></td><td class="dim">{ region, name, layoutId, tab? }</td><td>面板 / 标签刷新（面板刷新按钮或标签右键菜单）；带 tab 时表示刷新的是该标签（重建内容）。</td></tr><tr><td><code>menu-select</code></td><td class="dim">{ region, name, layoutId, tab, action }</td><td>标签右键菜单里的自定义项被点击（内置的关闭 / 关闭其它 / 关闭全部 / 刷新走 close / refresh 事件）。</td></tr><tr><td><code>ready</code></td><td class="dim">api</td><td>组件挂载完成，回传完整 API 实例。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>getCurName(region, layoutId?)</code></td><td class="dim">String | null</td><td>获取区域当前激活面板 name。</td></tr><tr><td><code>getItem(region, name?, layoutId?)</code></td><td class="dim">Object</td><td>读取面板 item 配置；name 空取当前激活。</td></tr><tr><td><code>exist(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>面板是否存在。</td></tr><tr><td><code>isActive(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>name 是否为当前激活且区域未收缩。</td></tr><tr><td><code>getPanels(region, layoutId?)</code></td><td class="dim">Array</td><td>返回区域面板数组（副本）。</td></tr><tr><td><code>open(region, item, layoutId?)</code></td><td class="dim">Object | null</td><td>打开面板（同名则显示并激活）—— 显示 / 激活面板统一走 show。item: { name, title, ...MyPanel 参数, 内容来源 url(+params) / html / component(+props，支持对象·全局名·相对项目根目录路径) }。</td></tr><tr><td><code>openTab(item, region?, name?, layoutId?)</code></td><td class="dim">Object | null</td><td>在区域面板里打开 tab（面板没有 tab 配置则就地建一个承载面板）。item: { name, title, iconCls?, url(+params) / html / component(+props) }；新建承载面板时 item 上的 position / closable / hasTool / contextmenu / menu / titleVertical 一并作为 tab 配置（默认可关闭）；name 缺省取该区域当前激活面板，tab 同名则更新并激活。</td></tr><tr><td><code>closeTab(tabName, region?, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>关闭 tab（移除标签）；关的是当前标签则激活相邻标签，面板保留。</td></tr><tr><td><code>closeOtherTabs(tabName, region?, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>关闭其它标签（保留 tabName），每个被移除的标签发一次 close 事件。</td></tr><tr><td><code>closeAllTabs(region?, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>关闭全部标签，每个被移除的标签发一次 close 事件。</td></tr><tr><td><code>setActiveTab(tabName, region?, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>激活已存在的 tab。</td></tr><tr><td><code>refreshTab(tabName?, region?, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>刷新标签（重建内容），tabName 缺省取当前标签；发 refresh 事件（附 tab）。</td></tr><tr><td><code>refresh(region?, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>刷新面板：带 tab 的面板刷新其当前标签，否则只发 refresh 事件（面板刷新按钮也走这里）。</td></tr><tr><td><code>getTabs(region?, name?, layoutId?) / getActiveTab(region?, name?, layoutId?)</code></td><td class="dim">Array | String</td><td>读取区域面板的标签列表 / 当前标签 name。</td></tr><tr><td><code>notifyTab(action, region, name?, tabName?, extra?)</code></td><td class="dim">Boolean</td><td>MyTabs 委托入口（action: change / close / closeOthers / closeAll / refresh / menu）。</td></tr><tr><td><code>remove(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>关闭并移除面板；有上级（parentName）则回到上级面板，否则切到区域内其它可见面板。</td></tr><tr><td><code>removeActive(region, layoutId?)</code></td><td class="dim">Boolean</td><td>移除当前激活面板。</td></tr><tr><td><code>removeAll(region, layoutId?)</code></td><td class="dim">void</td><td>清空区域所有面板。</td></tr><tr><td><code>show(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>【显隐唯一入口】显示面板并激活（同时解开隐藏），区域随之出现。name 缺省取该区域当前激活面板；没有托管面板的区域（内容全走插槽）改为启用区域。</td></tr><tr><td><code>hide(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>【显隐唯一入口】隐藏某面板（不删除）。有上级（parentName）则回到上级面板，区域回到上级内容；无上级则激活仍指向它，区域随之收起，再 show(region) 即原样展开。没有托管面板的区域改为停用区域。</td></tr><tr><td><code>isVisible(region, layoutId?)</code></td><td class="dim">Boolean</td><td>区域是否可见 —— 由「当前激活面板是否可见」派生；center 永远占位。</td></tr><tr><td><code>prev(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>激活上一个可见面板（同级线性切换）。</td></tr><tr><td><code>next(region, name?, layoutId?)</code></td><td class="dim">Boolean</td><td>激活下一个可见面板（同级线性切换）。</td></tr><tr><td><code>getPrevName(region, name?, layoutId?)</code></td><td class="dim">String | null</td><td>上一个面板 name（不切换）。</td></tr><tr><td><code>getNextName(region, name?, layoutId?)</code></td><td class="dim">String | null</td><td>下一个面板 name（不切换）。</td></tr><tr><td><code>up(region, name?, layoutId?) / getUpName(region, name?, layoutId?)</code></td><td class="dim">Boolean | String | null</td><td>上下级导航：激活 / 读取上级面板（parentName 指向的同区域面板，不存在则为 null）。</td></tr><tr><td><code>down(region, name?, layoutId?) / getDownName(region, name?, layoutId?)</code></td><td class="dim">Boolean | String | null</td><td>进入 / 读取下级面板：优先上级记录的最后一次进入（lastName），其次第一个可见下级。</td></tr><tr><td><code>max(region, name?, layoutId?)</code></td><td class="dim">void</td><td>区域最大化（按 item / 区域 / 全局 maxType）。</td></tr><tr><td><code>restore(region, name?, layoutId?)</code></td><td class="dim">void</td><td>区域还原。</td></tr><tr><td><code>maxed(region)</code></td><td class="dim">Boolean</td><td>区域是否处于最大化态。</td></tr><tr><td><code>setSize(region, size, layoutId?)</code></td><td class="dim">void</td><td>编程式设置区域尺寸（px）。</td></tr><tr><td><code>resize(layoutId?)</code></td><td class="dim">void</td><td>刷新布局（尺寸由 CSS 决定）。</td></tr><tr><td><code>notifyPanel(action, region, name?)</code></td><td class="dim">Boolean</td><td>MyPanel 委托入口（action: min / max / restore / close / refresh；min 即 hide）。</td></tr><tr><td><code>getLayoutId() / getParentLayoutId() / getChildLayoutId(region, name?)</code></td><td class="dim">String</td><td>布局 id 体系（用于嵌套布局转发）。</td></tr><tr><td><code>getSizes()</code></td><td class="dim">Object</td><td>当前区域尺寸快照 { north, south, west, east }。</td></tr><tr><td><code>getRegionItem(region)</code></td><td class="dim">Object</td><td>当前激活面板的完整 item。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>north / west / east / south</code></td><td class="dim">{ item, panelProps }</td><td>区域默认插槽，渲染当前激活面板。</td></tr><tr><td><code>default</code></td><td class="dim">{ item, panelProps }</td><td>center 区域默认插槽。</td></tr><tr><td><code>north:{name} / west:{name} / center:{name} / east:{name} / south:{name}</code></td><td class="dim">—</td><td>按面板 name 命名的区域插槽，同名激活时优先渲染。</td></tr><tr><td><code>tab:{name}</code></td><td class="dim">{ item }</td><td>标签内容插槽：面板配了 tab 时区域渲染 MyTabs，标签内容优先取该插槽（其次 item 的 component / url / html）。</td></tr><tr><td><code>tab-tool</code></td><td class="dim">{ region, item, tabs }</td><td>标签栏尾部工具栏：区域内标签栏右上角的自定义按钮（区域转发给 MyTabs 的 tool 插槽）。</td></tr><tr><td><code>面板内容来源（item 字段）</code></td><td class="dim">—</td><td>未写具名插槽时，区域用 MyPanelContent 渲染：item.component（对象·全局名·相对路径，+props）→ item.url（iframe，+params 拼接 query）→ item.html（v-html）。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mymainframe">
+    <h2>MyMainFrame</h2>
+    <p class="desc">主框架组件 = MyBorderLayout 的便捷封装，只保留一套显隐：区域内面板的 show / hide（区域可见性由面板派生，隐藏当前面板即收起该区域），外加区域可见性查询 isVisible 与切换 toggleRegion；中间内容页用 openBody 打开（layout 支持「左中右 lcr / 左中右下 lcrs」情景）。区域名支持 north|top · west|left · east|right · south|bottom · center。frameType=1 一张图（顶部+中间+底部），frameType=2 运维（含左侧栏）。区域面板的多标签用 openTab / closeTab / closeOtherTabs / closeAllTabs / setActiveTab / refreshTab 维护。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>frameType</code></td><td class="dim">Number</td><td><code>2</code></td><td>框架类型：1=一张图（无左右区域，强制 west/east 隐藏）；2=运维（含左侧栏）。</td></tr><tr><td><code>layoutId</code></td><td class="dim">String</td><td><code>'BorderLayout'</code></td><td>透传 MyBorderLayout.layoutId。</td></tr><tr><td><code>parentLayoutId</code></td><td class="dim">String</td><td><code>''</code></td><td>透传 MyBorderLayout.parentLayoutId。</td></tr><tr><td><code>regionLevel</code></td><td class="dim">String | Number</td><td><code>'ns'</code></td><td>透传 MyBorderLayout.regionLevel。</td></tr><tr><td><code>maxType</code></td><td class="dim">String</td><td><code>'center'</code></td><td>透传 MyBorderLayout.maxType（全局最大化类型默认值）。</td></tr><tr><td><code>animate</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>透传 MyBorderLayout.animate。</td></tr><tr><td><code>animationDuration</code></td><td class="dim">Number</td><td><code>260</code></td><td>透传 MyBorderLayout.animationDuration。</td></tr><tr><td><code>regions</code></td><td class="dim">Object</td><td><code>{}</code></td><td>透传 MyBorderLayout.regions。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>透传 MyBorderLayout.theme。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:regions</code></td><td class="dim">Object</td><td>透传 MyBorderLayout.update:regions。</td></tr><tr><td><code>update:sizes</code></td><td class="dim">Object</td><td>透传 MyBorderLayout.update:sizes。</td></tr><tr><td><code>show</code></td><td class="dim">{ region, name, layoutId, tab? }</td><td>透传区域 / 面板显示事件；tab 相关动作附 tab。</td></tr><tr><td><code>hide</code></td><td class="dim">{ region, name, layoutId }</td><td>透传区域 / 面板隐藏事件。</td></tr><tr><td><code>max</code></td><td class="dim">{ region, name, layoutId, mode }</td><td>透传区域最大化事件。</td></tr><tr><td><code>restore</code></td><td class="dim">{ region, name, layoutId }</td><td>透传区域还原事件。</td></tr><tr><td><code>close</code></td><td class="dim">{ region, name, layoutId, tab? }</td><td>透传面板关闭事件；带 tab 时表示关闭的是标签。</td></tr><tr><td><code>split</code></td><td class="dim">{ region, name, layoutId, size }</td><td>透传分割条拖拽事件。</td></tr><tr><td><code>refresh</code></td><td class="dim">{ region, name, layoutId, tab? }</td><td>透传面板 / 标签刷新事件；带 tab 时表示刷新的是标签。</td></tr><tr><td><code>menu-select</code></td><td class="dim">{ region, name, layoutId, tab, action }</td><td>透传标签右键菜单自定义项点击事件。</td></tr><tr><td><code>ready</code></td><td class="dim">api</td><td>透传 MyBorderLayout.ready。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>open(region, item)</code></td><td class="dim">Object | null</td><td>在指定区域打开面板。region 支持 north|top · west|left · east|right · south|bottom · center。</td></tr><tr><td><code>openTab(item, region, name?) / closeTab(tabName, region, name?)</code></td><td class="dim">Object | Boolean</td><td>在区域面板里打开 / 关闭 tab（面板没有 tab 配置则自动创建承载面板）；name 缺省取该区域当前激活面板。</td></tr><tr><td><code>closeOtherTabs(tabName, region, name?) / closeAllTabs(region, name?)</code></td><td class="dim">Boolean</td><td>关闭其它 / 全部标签。</td></tr><tr><td><code>setActiveTab(tabName, region, name?) / refreshTab(tabName, region, name?)</code></td><td class="dim">Boolean</td><td>激活 / 刷新标签（刷新即重建内容）。</td></tr><tr><td><code>getTabs(region, name?) / getActiveTab(region, name?)</code></td><td class="dim">Array | String</td><td>读取区域面板的标签列表 / 当前标签 name。</td></tr><tr><td><code>openBody(name, options?)</code></td><td class="dim">Object | null</td><td>中间打开内容页。options.layout 支持 &quot;lcr&quot;（左中右，west+east）与 &quot;lcrs&quot;（左中右下，west+east+south）；不传则仅中间。</td></tr><tr><td><code>openDefault()</code></td><td class="dim">Object | null</td><td>打开中间默认页（regions.center 激活面板，无则新建 mainBody 默认页）。</td></tr><tr><td><code>show(region, name?) / hide(region, name?)</code></td><td class="dim">Boolean</td><td>【显隐唯一入口】显示 / 隐藏区域内面板，name 缺省取该区域当前激活面板。区域可见性由面板派生：隐藏当前面板即收起整个区域，再 show(region) 即原样展开。面板配了 parentName 时，隐藏 / 关闭后回到上级。region 支持 north|top · west|left · east|right · south|bottom；center 永远占位，不做区域显隐。</td></tr><tr><td><code>isVisible(region) / toggleRegion(region, name?)</code></td><td class="dim">Boolean</td><td>查询区域是否可见 / 按当前可见状态在 show 与 hide 之间切换。</td></tr><tr><td><code>getLayout()</code></td><td class="dim">MyBorderLayout API</td><td>返回内部 MyBorderLayout 实例，可调用其全部方法（up / down / max / restore 等）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>north / west / east / south / default</code></td><td class="dim">{ item, panelProps }</td><td>透传给 MyBorderLayout 的同名区域插槽。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mypanel">
+    <h2>MyPanel</h2>
+    <p class="desc">通用面板控件（不依赖任何布局）。标题栏 + 内容区 + 底部，支持最小化 / 最大化 / 关闭 / 刷新按钮。不含布局专用参数（region / maxed 等由所属布局管理）：面板通过 data-layout-id + data-region 两个 DOM 属性反查所属布局与区域，独立使用与放入 MyBorderLayout / MyGridLayout 区域时按钮行为自动切换（委托给布局 vs 仅 emit）。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>name</code></td><td class="dim">String</td><td><code>''</code></td><td>面板唯一标识（区域内唯一）。</td></tr><tr><td><code>title</code></td><td class="dim">String</td><td><code>''</code></td><td>面板标题。</td></tr><tr><td><code>iconCls / icon</code></td><td class="dim">String</td><td><code>''</code></td><td>图标文本（icon 是 iconCls 的简写别名）。</td></tr><tr><td><code>hasTitle</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示标题区。</td></tr><tr><td><code>hasSubTitle</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否显示副标题。</td></tr><tr><td><code>subTitle</code></td><td class="dim">String</td><td><code>''</code></td><td>副标题文本。</td></tr><tr><td><code>hasTool</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示工具栏插槽区。</td></tr><tr><td><code>hasFooter</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否显示底部区。</td></tr><tr><td><code>footer</code></td><td class="dim">String</td><td><code>''</code></td><td>底部文本（默认插槽内容）。</td></tr><tr><td><code>border</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示边框。</td></tr><tr><td><code>scroll</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>内容区是否可滚动。</td></tr><tr><td><code>noscroll</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>强制隐藏滚动（优先级高于 scroll）。</td></tr><tr><td><code>opacity</code></td><td class="dim">Number | String</td><td><code>''</code></td><td>透明度（0-1）。</td></tr><tr><td><code>float</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否浮动样式（带阴影）。</td></tr><tr><td><code>headerHeight</code></td><td class="dim">Number</td><td><code>34</code></td><td>标题栏高度（px）。</td></tr><tr><td><code>bodyPadding</code></td><td class="dim">String</td><td><code>'10px 12px'</code></td><td>内容区内边距。</td></tr><tr><td><code>panelClass / headerClass / bodyClass</code></td><td class="dim">String</td><td><code>''</code></td><td>自定义类名。</td></tr><tr><td><code>panelStyle / headerStyle / bodyStyle</code></td><td class="dim">Object | String</td><td><code>null</code></td><td>自定义样式。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题。</td></tr><tr><td><code>min</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示最小化按钮（布局区域内 center 区域强制为 false）。</td></tr><tr><td><code>max</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示最大化按钮（布局区域内为区域最大化，已最大化时切换为还原按钮）。</td></tr><tr><td><code>close</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否显示关闭按钮。</td></tr><tr><td><code>refresh</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否显示刷新按钮。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>min</code></td><td class="dim">{ region, name }</td><td>点击最小化按钮（独立使用时触发；布局区域内改为 hide，区域随之收起）。</td></tr><tr><td><code>max</code></td><td class="dim">{ region, name }</td><td>点击最大化按钮（独立使用时触发；布局区域内由布局处理区域最大化）。</td></tr><tr><td><code>restore</code></td><td class="dim">{ region, name }</td><td>还原 —— 最大化还原 / 从最小化展开（即 min / max 的反向动作）。</td></tr><tr><td><code>close</code></td><td class="dim">{ region, name }</td><td>点击关闭按钮。</td></tr><tr><td><code>refresh</code></td><td class="dim">{ region, name }</td><td>点击刷新按钮。</td></tr></tbody></table>
+    </section>
+    
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>leftTool</code></td><td class="dim">—</td><td>标题左侧工具区（在标题之前）。</td></tr><tr><td><code>title</code></td><td class="dim">—</td><td>自定义标题区（替换默认 icon + title + subtitle）。</td></tr><tr><td><code>actions</code></td><td class="dim">—</td><td>标题栏工具区（标题与按钮之间，flex:1）。</td></tr><tr><td><code>default</code></td><td class="dim">—</td><td>内容区。</td></tr><tr><td><code>footer</code></td><td class="dim">—</td><td>底部区（覆盖 footer prop 文本）。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mypanelcontent">
+    <h2>MyPanelContent</h2>
+    <p class="desc">面板内容渲染器。按优先级 component &gt; url &gt; html &gt; 默认插槽 渲染面板内容，支持参数传递（组件 props / URL query 参数）与组件路径懒加载。可独立使用，也是 MyBorderLayout 区域插槽的默认 fallback。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>item</code></td><td class="dim">Object</td><td><code>{}</code></td><td>面板 item，承载内容来源与参数（见下方「内容来源字段」）。</td></tr></tbody></table>
+    </section>
+    
+    
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>default</code></td><td class="dim">—</td><td>item.component / url / html 均未定义时的回退内容。</td></tr><tr><td><code>内容来源字段（item 内）</code></td><td class="dim">—</td><td>component: 组件对象 / 全局名字符串 / 相对项目根目录路径字符串（如 /src/views/Foo.vue，按 import.meta.glob 懒加载）｜props: 组件 props｜url: iframe 地址｜params: URL query 参数对象（→ ?k=v&amp;...）｜html: HTML 字符串（v-html）。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mytabs">
+    <h2>MyTabs</h2>
+    <p class="desc">多标签容器。标签栏（top / bottom / left / right）+ 内容区，内容按 MyPanelContent 的优先级渲染（component &gt; url(+params) &gt; html &gt; tab:{name} 具名插槽）。标签默认首次激活才挂载、之后保留状态（lazy:false 立即挂载，reload:true 每次激活重建，refreshAt 变化即重建）；右键菜单内置关闭 / 关闭其它 / 关闭全部 / 刷新（点击别处 / Esc / 滚动 / 鼠标移出范围时关闭）。左右布局下 titleVertical 可让标签文字竖排。受控 / 非受控皆可；位于 MyBorderLayout 区域内时，切换 / 关闭 / 刷新经布局注册表上报（notifyTab），标签数据由所在面板的 tab 配置统一维护。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>items</code></td><td class="dim">Array</td><td><code>[]</code></td><td>标签项数组：[{ name, title, iconCls?, closable?, disabled?, lazy?, reload?, menu?, url(+params) / html / component(+props) }]。</td></tr><tr><td><code>active</code></td><td class="dim">String</td><td><code>''</code></td><td>当前标签 name；传了即以它为准（受控），空值由组件内部维护。</td></tr><tr><td><code>position</code></td><td class="dim">String</td><td><code>'top'</code></td><td>标签栏位置：top / bottom / left / right。</td></tr><tr><td><code>closable</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否允许关闭（标签项 closable 可单独覆盖）。</td></tr><tr><td><code>hasTool</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>显示标签栏尾部工具栏（tool 插槽）。</td></tr><tr><td><code>contextmenu</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>启用标签右键菜单（打开前先激活该标签）。</td></tr><tr><td><code>menu</code></td><td class="dim">Array</td><td><code>null</code></td><td>右键菜单项：[{ name, title, iconCls?, disabled?, divided?, handler? }]；缺省用内置项（关闭 / 关闭其它 / 关闭全部 / 刷新），标签项的 menu 可单独覆盖。</td></tr><tr><td><code>titleVertical</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>标签文字竖直排列（仅 position 为 left / right 生效）。</td></tr><tr><td><code>tabsClass</code></td><td class="dim">String</td><td><code>''</code></td><td>附加类名（自定义标签栏样式）。</td></tr><tr><td><code>panelName</code></td><td class="dim">String</td><td><code>''</code></td><td>所属面板 name（位于布局区域内时用于上报切换 / 关闭）。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题：空值继承父级。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:active</code></td><td class="dim">String</td><td>当前标签变化（v-model:active）。</td></tr><tr><td><code>change</code></td><td class="dim">{ name, item }</td><td>切换标签。</td></tr><tr><td><code>close</code></td><td class="dim">{ name, item }</td><td>标签被关闭（关闭按钮 / 右键菜单，关闭其它 · 全部时每个被移除的标签发一次）。</td></tr><tr><td><code>refresh</code></td><td class="dim">{ name, item }</td><td>标签被刷新（重建内容）。</td></tr><tr><td><code>contextmenu</code></td><td class="dim">{ name, item, event }</td><td>标签上右键（contextmenu 关闭时也发，仅作通知）。</td></tr><tr><td><code>menu-select</code></td><td class="dim">{ action, name, item }</td><td>右键菜单里的自定义项被点击（内置项不触发）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>setActive(name)</code></td><td class="dim">Boolean</td><td>激活标签。</td></tr><tr><td><code>close(name)</code></td><td class="dim">Boolean</td><td>关闭标签。</td></tr><tr><td><code>closeOthers(name) / closeAll()</code></td><td class="dim">Boolean</td><td>关闭其它 / 全部标签。</td></tr><tr><td><code>refresh(name?)</code></td><td class="dim">Boolean</td><td>刷新标签（重建内容），name 缺省取当前标签。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>tab:{name}</code></td><td class="dim">{ item }</td><td>按标签 name 命名的内容插槽，优先于 item 的 component / url / html。</td></tr><tr><td><code>tool</code></td><td class="dim">—</td><td>标签栏尾部工具栏内容。</td></tr><tr><td><code>menu</code></td><td class="dim">{ items, item, run, close }</td><td>自定义右键菜单（替换内置菜单渲染）。</td></tr><tr><td><code>empty</code></td><td class="dim">—</td><td>没有标签（或当前标签不存在）时的兜底内容。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mysplitter">
+    <h2>MySplitter</h2>
+    <p class="desc">分割条。默认只显示居中握把，悬浮展开成按钮组（[收缩][最大化] 或 [最大化][收缩]，east/south 顺序相反）。已最大化时不显示最大化按钮（也不切换为还原图标）。区域完全隐藏后退化为贴边浮动伸缩按钮。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>direction</code></td><td class="dim">String</td><td><code>'v-left'</code></td><td>方向：v-left/v-right/h-top/h-bottom。决定拖拽轴向、按钮排布、图标方向。</td></tr><tr><td><code>min</code></td><td class="dim">Number</td><td><code>60</code></td><td>拖拽最小尺寸（px）。</td></tr><tr><td><code>max</code></td><td class="dim">Number</td><td><code>800</code></td><td>拖拽最大尺寸（px）。</td></tr><tr><td><code>step</code></td><td class="dim">Number</td><td><code>1</code></td><td>拖拽步进（&gt;1 时按步取整）。</td></tr><tr><td><code>split</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否可拖拽。</td></tr><tr><td><code>collapsible</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否显示收缩 / 展开按钮。</td></tr><tr><td><code>maxBtn</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否显示最大化按钮。</td></tr><tr><td><code>maxed</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>当前区域是否处于最大化态（true 时隐藏最大化按钮）。</td></tr><tr><td><code>collapsed</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>当前区域是否处于收缩态（影响图标方向）。</td></tr><tr><td><code>hidden</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>区域完全隐藏，分割条退化为贴边浮动伸缩按钮。</td></tr><tr><td><code>dual</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>双向收缩模式（栅格布局用）：分割条两侧各控制一个收缩目标。</td></tr><tr><td><code>nextCollapsed</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>dual 模式下另一侧是否已收缩。</td></tr><tr><td><code>nextCollapsible</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>dual 模式下另一侧是否显示收缩按钮。</td></tr><tr><td><code>hoverReveal</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否启用「悬浮才展开按钮组」（false 时按钮常显）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>dragStart</code></td><td class="dim">{ clientPos, setStartSize }</td><td>拖拽开始；setStartSize 用于父组件回填起始尺寸。</td></tr><tr><td><code>dragMove</code></td><td class="dim">size (px)</td><td>拖拽移动（已限制在 min/max 内）。</td></tr><tr><td><code>dragEnd</code></td><td class="dim">MouseEvent</td><td>拖拽结束。</td></tr><tr><td><code>toggle</code></td><td class="dim">—</td><td>点击收缩 / 展开按钮。</td></tr><tr><td><code>toggleNext</code></td><td class="dim">—</td><td>dual 模式下点击另一侧的收缩按钮。</td></tr><tr><td><code>max</code></td><td class="dim">—</td><td>点击最大化按钮。</td></tr></tbody></table>
+    </section>
+    
+    
+  </main>
+
+  <main class="doc" id="myfloatpanel">
+    <h2>MyFloatPanel</h2>
+    <p class="desc">悬浮面板。位置参数采用 offset 语义：字符串对齐（auto=居中 / t / r / b / l / lt / lb / rt / rb）、4 边偏移对象、数字顶部偏移。支持标题栏拖拽移动（move）、左下 / 右下角 resize、最大化 / 还原 / 关闭、模态遮罩（shade）。默认挂载到 body，container 可指定容器（拖动范围约束在容器内）。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>title</code></td><td class="dim">String</td><td><code>''</code></td><td>标题。</td></tr><tr><td><code>hasTitle</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示标题栏。</td></tr><tr><td><code>close</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示关闭按钮。</td></tr><tr><td><code>max</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示最大化按钮。</td></tr><tr><td><code>min</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>最小化按钮（当前未渲染）。</td></tr><tr><td><code>maxed</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>初始即最大化。</td></tr><tr><td><code>width / height</code></td><td class="dim">Number | String</td><td><code>360 / 280</code></td><td>面板宽高（px）。</td></tr><tr><td><code>offset</code></td><td class="dim">String | Object | Number</td><td><code>'auto'</code></td><td>位置：字符串对齐 auto/t/r/b/l/lt/rt/lb/rb（auto=居中）｜对象 { top, left, right, bottom }（4 边偏移，px 或 &quot;NN%&quot;）｜数字（顶部偏移）。</td></tr><tr><td><code>fixed</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否固定定位：true=fixed 跟随视口；false=absolute 含 scroll 偏移。</td></tr><tr><td><code>resize</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否可拖拽 resize。</td></tr><tr><td><code>minWidth / minHeight</code></td><td class="dim">Number</td><td><code>200 / 140</code></td><td>resize 最小尺寸。</td></tr><tr><td><code>maxWidth / maxHeight</code></td><td class="dim">Number</td><td><code>2000</code></td><td>resize 最大尺寸。</td></tr><tr><td><code>shade</code></td><td class="dim">Boolean | Number</td><td><code>false</code></td><td>模态遮罩：true=默认遮罩；数字=透明度；false=无遮罩（带遮罩时自动居中）。</td></tr><tr><td><code>shadeClose</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>shade 时点击遮罩是否关闭。</td></tr><tr><td><code>zIndex</code></td><td class="dim">Number</td><td><code>999</code></td><td>层级。</td></tr><tr><td><code>visible</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示。</td></tr><tr><td><code>container</code></td><td class="dim">String</td><td><code>'body'</code></td><td>挂载容器：body 或 CSS 选择器。</td></tr><tr><td><code>move</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否允许拖拽标题栏移动。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:visible</code></td><td class="dim">Boolean</td><td>可见性变化（v-model:visible）。</td></tr><tr><td><code>close</code></td><td class="dim">—</td><td>关闭。</td></tr><tr><td><code>max</code></td><td class="dim">—</td><td>最大化。</td></tr><tr><td><code>restore</code></td><td class="dim">—</td><td>还原。</td></tr><tr><td><code>move</code></td><td class="dim">{ left, top }</td><td>拖拽移动（相对容器的 left/top）。</td></tr><tr><td><code>resize</code></td><td class="dim">{ width, height, left, top }</td><td>拖拽 resize。</td></tr></tbody></table>
+    </section>
+    
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>title</code></td><td class="dim">—</td><td>自定义标题区。</td></tr><tr><td><code>default</code></td><td class="dim">—</td><td>内容区。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mygridlayout">
+    <h2>MyGridLayout</h2>
+    <p class="desc">栅格布局容器。基于 12 分栏比例系统，支持四分屏、左右布局等场景。每个单元格通过 layoutNum（1..12 占比，&gt;12 固定像素）声明尺寸，layoutType=h（先水平后竖直）或 v（先竖直后水平）。行/单元格之间插入 MySplitter 可拖拽、双向收缩。面板最大化默认填满整个布局或页面。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>layoutId</code></td><td class="dim">String</td><td><code>''</code></td><td>布局标识（缺省自动生成）。</td></tr><tr><td><code>layoutType</code></td><td class="dim">String</td><td><code>'h'</code></td><td>排列方向：h（先水平后竖直，换行成行）/ v（先竖直后水平，换列成列）。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题。</td></tr><tr><td><code>maxType</code></td><td class="dim">String</td><td><code>'center'</code></td><td>最大化类型：center / layout（整个布局） / page（整个页面）。</td></tr><tr><td><code>items</code></td><td class="dim">Array</td><td><code>[]</code></td><td>单元格集合：[{ name, title, layoutNum, split, collapsible, max, border, ...MyPanel 参数 }]。</td></tr><tr><td><code>split</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>分割条是否可拖拽（全局默认，单元格 item 可覆盖）。</td></tr><tr><td><code>collapsible</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>分割条是否显示收缩按钮（全局默认）。</td></tr><tr><td><code>border</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>单元格边框（全局默认）。</td></tr><tr><td><code>min</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>面板最小化按钮（全局默认）。</td></tr><tr><td><code>max</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>面板最大化按钮（全局默认）。</td></tr><tr><td><code>close</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>面板关闭按钮（全局默认）。</td></tr><tr><td><code>animate</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否启用过渡动画。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>max</code></td><td class="dim">{ key, name }</td><td>单元格最大化。</td></tr><tr><td><code>restore</code></td><td class="dim">{ key }</td><td>还原。</td></tr><tr><td><code>split</code></td><td class="dim">{ axis, index|key, size }</td><td>分割条拖拽（axis: line/cell）。</td></tr><tr><td><code>close</code></td><td class="dim">{ key }</td><td>单元格关闭 / 最小化触发隐藏。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>max(key)</code></td><td class="dim">void</td><td>最大化指定单元格（简写）。</td></tr><tr><td><code>restore()</code></td><td class="dim">void</td><td>还原。</td></tr><tr><td><code>maxed(key)</code></td><td class="dim">Boolean</td><td>判断指定单元格是否处于最大化态（简写）。</td></tr><tr><td><code>hide(key) / show(key)</code></td><td class="dim">void</td><td>隐藏 / 显示单元格。</td></tr><tr><td><code>toggleLine(lineIdx) / toggleCell(cell)</code></td><td class="dim">void</td><td>切换整行 / 整列 / 单元格隐藏。</td></tr><tr><td><code>notifyPanel(action, region)</code></td><td class="dim">Boolean</td><td>面板事件委托入口（action: min / max / restore / close；min 即 hide）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>{cell._key}</code></td><td class="dim">{ cell }</td><td>按单元格 key（默认 name）命名的具名插槽。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="composables-组合式函数-">
+    <h2>Composables（组合式函数）</h2>
+    <p class="desc">主题、布局注册表、面板参数归一化等工具。</p>
+    
+    
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>import { normalizeTheme, themeClass, useThemeContext, THEMES, DEFAULT_THEME } from '.../composables/theme.js'</code></td><td class="dim">—</td><td>主题工具：normalizeTheme(str) 归一化；themeClass(theme) 返回类名；useThemeContext(props) 解析自身与父级主题。</td></tr><tr><td><code>import { ROOT_LAYOUT_ID, genLayoutId, makeChildLayoutId, registerLayout, unregisterLayout, getLayout, hasLayout, listLayoutIds } from '.../composables/layoutRegistry.js'</code></td><td class="dim">—</td><td>布局注册表：用于嵌套布局 / 面板反查所属布局。makeChildLayoutId(parent, region, name) 生成子布局 id。</td></tr><tr><td><code>import { normalizePanelItem, toPanelProps, normalizeMaxType, REGION_DEFAULTS, PANEL_DEFAULTS, REGION_SHOW_DEFAULTS, REGION_SIZE_DEFAULTS } from '.../composables/panelItem.js'</code></td><td class="dim">—</td><td>面板 / 区域 item 参数工具：归一化与挑选可 v-bind 的面板参数。</td></tr></tbody></table>
+    </section>
+    
+  </main></div>
+<a class="top" href="#top">回到顶部 ↑</a>
+</body>
+</html>
