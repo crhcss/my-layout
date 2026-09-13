@@ -1,0 +1,1 @@
+var e=new Map,t=`BorderLayout`,n=`defaultname`,r=0;function i(e=`layout`){return`${e}_${++r}`}function a(e,t,n){return`${e}__${t}__${n||`defaultname`}`}function o(t,n){t&&e.set(t,n)}function s(t){t&&e.delete(t)}function c(t){return t&&e.get(t)||null}export{a,c as i,t as n,o,i as r,s,n as t};
