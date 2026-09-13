@@ -1,0 +1,31 @@
+{
+  "name": "@crhcss/my-layout",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vue3 布局组件库：Border 布局 / 主框架 / 面板 / 多标签 / 浮动面板 / 分割条",
+  "author": "crhcss",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crhcss/my-layout.git"
+  },
+  "homepage": "https://github.com/crhcss/my-layout#readme",
+  "main": "./dist/my-layout.cjs",
+  "module": "./dist/my-layout.js",
+  "unpkg": "./dist/my-layout.umd.js",
+  "jsdelivr": "./dist/my-layout.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/my-layout.js",
+      "require": "./dist/my-layout.cjs",
+      "default": "./dist/my-layout.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  }
+}
