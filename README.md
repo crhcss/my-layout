@@ -64,6 +64,13 @@ import { MyBorderLayout, MyMainFrame, MyPanel } from '@crhcss/my-layout'
 
 主题（`light` / `light-blue` / `dark`）与工具类：`normalizeTheme` · `themeClass` · `useThemeContext` · `THEMES` · `DEFAULT_THEME`
 
+## API 文档
+
+- **在线网页版**：<https://crhcss.github.io/my-layout/api-docs.html>（各组件 props / 事件 / 方法 / 插槽速查）
+- **Markdown 版**：包内 `docs/API.md`（`node_modules/@crhcss/my-layout/docs/API.md` 或仓库根 `docs/API.md`）
+- **组件内置**：应用里放一个 `<MyApiDoc :visible="visible" @close="visible = false" />`，运行时弹层查看全部 API
+- 重新生成：`npm run build:docs`（数据源 `src/mylayout/composables/apiDocs.js`，改接口后同步维护）
+
 ## 本地开发
 
 ```bash

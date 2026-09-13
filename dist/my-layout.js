@@ -283,7 +283,7 @@ var j = (e, t) => {
 			}, [(_(), a("svg", K, [o("path", { d: ne.value }, null, 8, le)]))], 40, ce)) : i("", !0)
 		], 64))], 2)])) : i("", !0)], 34));
 	}
-}, [["__scopeId", "data-v-a6b601e9"]]), J = /* @__PURE__ */ new Map(), fe = "BorderLayout", Y = "defaultname", X = 0;
+}, [["__scopeId", "data-v-8ee8c076"]]), J = /* @__PURE__ */ new Map(), fe = "BorderLayout", Y = "defaultname", X = 0;
 function Z(e = "layout") {
 	return `${e}_${++X}`;
 }
@@ -3214,10 +3214,1331 @@ var yt = [
 			}, null, 32)], 64)) : i("", !0)
 		], 6)) : i("", !0)], 8, ["to"]));
 	}
-}, [["__scopeId", "data-v-a592bf27"]]), Bt = { class: "my-api-doc__dialog" }, Vt = { class: "my-api-doc__body" }, Ht = { class: "my-api-doc__nav" }, Ut = ["onClick"], Wt = {
+}, [["__scopeId", "data-v-a592bf27"]]), Bt = [
+	{
+		name: "MyBorderLayout",
+		desc: "核心 Border 布局容器。五区（north / west / center / east / south）CSS Grid 实现，支持嵌套布局、区域优先级、最大化（center / layout / page）、面板导航、区域悬浮（item.float）与区域面板多标签（item.tab）。",
+		props: [
+			{
+				name: "layoutId",
+				type: "String",
+				default: "'BorderLayout'",
+				desc: "布局唯一标识；嵌套布局通过 layoutId 体系定位。"
+			},
+			{
+				name: "parentLayoutId",
+				type: "String",
+				default: "''",
+				desc: "父布局 id（子布局自动带出，用于向上追溯）。"
+			},
+			{
+				name: "regionLevel",
+				type: "String | Number",
+				default: "'ns'",
+				desc: "区域优先级：ns(上下左右) / ew(左右上下) / nws(上左下右) / nwe(上左右下)，也接受 1/2/3/4 与全称。"
+			},
+			{
+				name: "maxType",
+				type: "String",
+				default: "'center'",
+				desc: "全局默认最大化类型：center(覆盖自身+中间) / layout(整个布局) / page(整个页面+全屏)。优先级：item.maxType > regions[region].maxType > 全局 maxType > \"center\"。"
+			},
+			{
+				name: "animate",
+				type: "Boolean",
+				default: "true",
+				desc: "是否启用尺寸 / 最大化过渡动画。"
+			},
+			{
+				name: "animationDuration",
+				type: "Number",
+				default: "260",
+				desc: "动画时长（毫秒）。"
+			},
+			{
+				name: "regions",
+				type: "Object",
+				default: "{}",
+				desc: "区域配置：{ north:{active,panels,show}, west:{...}, center:{...}, east:{...}, south:{...} }。每个 panel item 参数集 ≈ MyPanel，另加布局参数 float（区域悬浮在中间区域之上）/ tab（{ items, active, position, closable, hasTool, contextmenu, menu, titleVertical } 多标签）。"
+			},
+			{
+				name: "autoPanel",
+				type: "Boolean",
+				default: "false",
+				desc: "true 时区域自动包一层 MyPanel，插槽内容作为面板 body。"
+			},
+			{
+				name: "theme",
+				type: "String",
+				default: "''",
+				desc: "主题：空值继承父级；light / light-blue / dark。"
+			}
+		],
+		emits: [
+			{
+				name: "update:regions",
+				payload: "Object",
+				desc: "regions 变化（v-model:regions）。"
+			},
+			{
+				name: "update:sizes",
+				payload: "Object",
+				desc: "区域尺寸变化（拖拽时）。"
+			},
+			{
+				name: "show",
+				payload: "{ region, name, layoutId, tab? }",
+				desc: "面板 / 区域显示 —— 打开 / 激活面板、展开区域都走这里；tab 相关动作附 tab（标签 name）。"
+			},
+			{
+				name: "hide",
+				payload: "{ region, name, layoutId }",
+				desc: "面板 / 区域隐藏 —— 面板最小化按钮也走这里，区域随之收起。"
+			},
+			{
+				name: "max",
+				payload: "{ region, name, layoutId, mode }",
+				desc: "区域最大化。"
+			},
+			{
+				name: "restore",
+				payload: "{ region, name, layoutId }",
+				desc: "区域还原。"
+			},
+			{
+				name: "close",
+				payload: "{ region, name, layoutId, tab? }",
+				desc: "面板关闭并移除；带 tab 时表示关闭的是该标签（面板保留）。"
+			},
+			{
+				name: "split",
+				payload: "{ region, name, layoutId, size }",
+				desc: "分割条拖拽移动。"
+			},
+			{
+				name: "refresh",
+				payload: "{ region, name, layoutId, tab? }",
+				desc: "面板 / 标签刷新（面板刷新按钮或标签右键菜单）；带 tab 时表示刷新的是该标签（重建内容）。"
+			},
+			{
+				name: "menu-select",
+				payload: "{ region, name, layoutId, tab, action }",
+				desc: "标签右键菜单里的自定义项被点击（内置的关闭 / 关闭其它 / 关闭全部 / 刷新走 close / refresh 事件）。"
+			},
+			{
+				name: "ready",
+				payload: "api",
+				desc: "组件挂载完成，回传完整 API 实例。"
+			}
+		],
+		methods: [
+			{
+				sig: "getCurName(region, layoutId?)",
+				ret: "String | null",
+				desc: "获取区域当前激活面板 name。"
+			},
+			{
+				sig: "getItem(region, name?, layoutId?)",
+				ret: "Object",
+				desc: "读取面板 item 配置；name 空取当前激活。"
+			},
+			{
+				sig: "exist(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "面板是否存在。"
+			},
+			{
+				sig: "isActive(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "name 是否为当前激活且区域未收缩。"
+			},
+			{
+				sig: "getPanels(region, layoutId?)",
+				ret: "Array",
+				desc: "返回区域面板数组（副本）。"
+			},
+			{
+				sig: "open(region, item, layoutId?)",
+				ret: "Object | null",
+				desc: "打开面板（同名则显示并激活）—— 显示 / 激活面板统一走 show。item: { name, title, ...MyPanel 参数, 内容来源 url(+params) / html / component(+props，支持对象·全局名·相对项目根目录路径) }。"
+			},
+			{
+				sig: "openTab(item, region?, name?, layoutId?)",
+				ret: "Object | null",
+				desc: "在区域面板里打开 tab（面板没有 tab 配置则就地建一个承载面板）。item: { name, title, iconCls?, url(+params) / html / component(+props) }；新建承载面板时 item 上的 position / closable / hasTool / contextmenu / menu / titleVertical 一并作为 tab 配置（默认可关闭）；name 缺省取该区域当前激活面板，tab 同名则更新并激活。"
+			},
+			{
+				sig: "closeTab(tabName, region?, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "关闭 tab（移除标签）；关的是当前标签则激活相邻标签，面板保留。"
+			},
+			{
+				sig: "closeOtherTabs(tabName, region?, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "关闭其它标签（保留 tabName），每个被移除的标签发一次 close 事件。"
+			},
+			{
+				sig: "closeAllTabs(region?, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "关闭全部标签，每个被移除的标签发一次 close 事件。"
+			},
+			{
+				sig: "setActiveTab(tabName, region?, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "激活已存在的 tab。"
+			},
+			{
+				sig: "refreshTab(tabName?, region?, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "刷新标签（重建内容），tabName 缺省取当前标签；发 refresh 事件（附 tab）。"
+			},
+			{
+				sig: "refresh(region?, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "刷新面板：带 tab 的面板刷新其当前标签，否则只发 refresh 事件（面板刷新按钮也走这里）。"
+			},
+			{
+				sig: "getTabs(region?, name?, layoutId?) / getActiveTab(region?, name?, layoutId?)",
+				ret: "Array | String",
+				desc: "读取区域面板的标签列表 / 当前标签 name。"
+			},
+			{
+				sig: "notifyTab(action, region, name?, tabName?, extra?)",
+				ret: "Boolean",
+				desc: "MyTabs 委托入口（action: change / close / closeOthers / closeAll / refresh / menu）。"
+			},
+			{
+				sig: "remove(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "关闭并移除面板；有上级（parentName）则回到上级面板，否则切到区域内其它可见面板。"
+			},
+			{
+				sig: "removeActive(region, layoutId?)",
+				ret: "Boolean",
+				desc: "移除当前激活面板。"
+			},
+			{
+				sig: "removeAll(region, layoutId?)",
+				ret: "void",
+				desc: "清空区域所有面板。"
+			},
+			{
+				sig: "show(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "【显隐唯一入口】显示面板并激活（同时解开隐藏），区域随之出现。name 缺省取该区域当前激活面板；没有托管面板的区域（内容全走插槽）改为启用区域。"
+			},
+			{
+				sig: "hide(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "【显隐唯一入口】隐藏某面板（不删除）。有上级（parentName）则回到上级面板，区域回到上级内容；无上级则激活仍指向它，区域随之收起，再 show(region) 即原样展开。没有托管面板的区域改为停用区域。"
+			},
+			{
+				sig: "isVisible(region, layoutId?)",
+				ret: "Boolean",
+				desc: "区域是否可见 —— 由「当前激活面板是否可见」派生；center 永远占位。"
+			},
+			{
+				sig: "prev(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "激活上一个可见面板（同级线性切换）。"
+			},
+			{
+				sig: "next(region, name?, layoutId?)",
+				ret: "Boolean",
+				desc: "激活下一个可见面板（同级线性切换）。"
+			},
+			{
+				sig: "getPrevName(region, name?, layoutId?)",
+				ret: "String | null",
+				desc: "上一个面板 name（不切换）。"
+			},
+			{
+				sig: "getNextName(region, name?, layoutId?)",
+				ret: "String | null",
+				desc: "下一个面板 name（不切换）。"
+			},
+			{
+				sig: "up(region, name?, layoutId?) / getUpName(region, name?, layoutId?)",
+				ret: "Boolean | String | null",
+				desc: "上下级导航：激活 / 读取上级面板（parentName 指向的同区域面板，不存在则为 null）。"
+			},
+			{
+				sig: "down(region, name?, layoutId?) / getDownName(region, name?, layoutId?)",
+				ret: "Boolean | String | null",
+				desc: "进入 / 读取下级面板：优先上级记录的最后一次进入（lastName），其次第一个可见下级。"
+			},
+			{
+				sig: "max(region, name?, layoutId?)",
+				ret: "void",
+				desc: "区域最大化（按 item / 区域 / 全局 maxType）。"
+			},
+			{
+				sig: "restore(region, name?, layoutId?)",
+				ret: "void",
+				desc: "区域还原。"
+			},
+			{
+				sig: "maxed(region)",
+				ret: "Boolean",
+				desc: "区域是否处于最大化态。"
+			},
+			{
+				sig: "setSize(region, size, layoutId?)",
+				ret: "void",
+				desc: "编程式设置区域尺寸（px）。"
+			},
+			{
+				sig: "resize(layoutId?)",
+				ret: "void",
+				desc: "刷新布局（尺寸由 CSS 决定）。"
+			},
+			{
+				sig: "notifyPanel(action, region, name?)",
+				ret: "Boolean",
+				desc: "MyPanel 委托入口（action: min / max / restore / close / refresh；min 即 hide）。"
+			},
+			{
+				sig: "getLayoutId() / getParentLayoutId() / getChildLayoutId(region, name?)",
+				ret: "String",
+				desc: "布局 id 体系（用于嵌套布局转发）。"
+			},
+			{
+				sig: "getSizes()",
+				ret: "Object",
+				desc: "当前区域尺寸快照 { north, south, west, east }。"
+			},
+			{
+				sig: "getRegionItem(region)",
+				ret: "Object",
+				desc: "当前激活面板的完整 item。"
+			}
+		],
+		slots: [
+			{
+				name: "north / west / east / south",
+				scope: "{ item, panelProps }",
+				desc: "区域默认插槽，渲染当前激活面板。"
+			},
+			{
+				name: "default",
+				scope: "{ item, panelProps }",
+				desc: "center 区域默认插槽。"
+			},
+			{
+				name: "north:{name} / west:{name} / center:{name} / east:{name} / south:{name}",
+				scope: "—",
+				desc: "按面板 name 命名的区域插槽，同名激活时优先渲染。"
+			},
+			{
+				name: "tab:{name}",
+				scope: "{ item }",
+				desc: "标签内容插槽：面板配了 tab 时区域渲染 MyTabs，标签内容优先取该插槽（其次 item 的 component / url / html）。"
+			},
+			{
+				name: "tab-tool",
+				scope: "{ region, item, tabs }",
+				desc: "标签栏尾部工具栏：区域内标签栏右上角的自定义按钮（区域转发给 MyTabs 的 tool 插槽）。"
+			},
+			{
+				name: "面板内容来源（item 字段）",
+				scope: "—",
+				desc: "未写具名插槽时，区域用 MyPanelContent 渲染：item.component（对象·全局名·相对路径，+props）→ item.url（iframe，+params 拼接 query）→ item.html（v-html）。"
+			}
+		]
+	},
+	{
+		name: "MyMainFrame",
+		desc: "主框架组件 = MyBorderLayout 的便捷封装，只保留一套显隐：区域内面板的 show / hide（区域可见性由面板派生，隐藏当前面板即收起该区域），外加区域可见性查询 isVisible 与切换 toggleRegion；中间内容页用 openBody 打开（layout 支持「左中右 lcr / 左中右下 lcrs」情景）。区域名支持 north|top · west|left · east|right · south|bottom · center。frameType=1 一张图（顶部+中间+底部），frameType=2 运维（含左侧栏）。区域面板的多标签用 openTab / closeTab / closeOtherTabs / closeAllTabs / setActiveTab / refreshTab 维护。",
+		props: [
+			{
+				name: "frameType",
+				type: "Number",
+				default: "2",
+				desc: "框架类型：1=一张图（无左右区域，强制 west/east 隐藏）；2=运维（含左侧栏）。"
+			},
+			{
+				name: "layoutId",
+				type: "String",
+				default: "'BorderLayout'",
+				desc: "透传 MyBorderLayout.layoutId。"
+			},
+			{
+				name: "parentLayoutId",
+				type: "String",
+				default: "''",
+				desc: "透传 MyBorderLayout.parentLayoutId。"
+			},
+			{
+				name: "regionLevel",
+				type: "String | Number",
+				default: "'ns'",
+				desc: "透传 MyBorderLayout.regionLevel。"
+			},
+			{
+				name: "maxType",
+				type: "String",
+				default: "'center'",
+				desc: "透传 MyBorderLayout.maxType（全局最大化类型默认值）。"
+			},
+			{
+				name: "animate",
+				type: "Boolean",
+				default: "true",
+				desc: "透传 MyBorderLayout.animate。"
+			},
+			{
+				name: "animationDuration",
+				type: "Number",
+				default: "260",
+				desc: "透传 MyBorderLayout.animationDuration。"
+			},
+			{
+				name: "regions",
+				type: "Object",
+				default: "{}",
+				desc: "透传 MyBorderLayout.regions。"
+			},
+			{
+				name: "theme",
+				type: "String",
+				default: "''",
+				desc: "透传 MyBorderLayout.theme。"
+			}
+		],
+		emits: [
+			{
+				name: "update:regions",
+				payload: "Object",
+				desc: "透传 MyBorderLayout.update:regions。"
+			},
+			{
+				name: "update:sizes",
+				payload: "Object",
+				desc: "透传 MyBorderLayout.update:sizes。"
+			},
+			{
+				name: "show",
+				payload: "{ region, name, layoutId, tab? }",
+				desc: "透传区域 / 面板显示事件；tab 相关动作附 tab。"
+			},
+			{
+				name: "hide",
+				payload: "{ region, name, layoutId }",
+				desc: "透传区域 / 面板隐藏事件。"
+			},
+			{
+				name: "max",
+				payload: "{ region, name, layoutId, mode }",
+				desc: "透传区域最大化事件。"
+			},
+			{
+				name: "restore",
+				payload: "{ region, name, layoutId }",
+				desc: "透传区域还原事件。"
+			},
+			{
+				name: "close",
+				payload: "{ region, name, layoutId, tab? }",
+				desc: "透传面板关闭事件；带 tab 时表示关闭的是标签。"
+			},
+			{
+				name: "split",
+				payload: "{ region, name, layoutId, size }",
+				desc: "透传分割条拖拽事件。"
+			},
+			{
+				name: "refresh",
+				payload: "{ region, name, layoutId, tab? }",
+				desc: "透传面板 / 标签刷新事件；带 tab 时表示刷新的是标签。"
+			},
+			{
+				name: "menu-select",
+				payload: "{ region, name, layoutId, tab, action }",
+				desc: "透传标签右键菜单自定义项点击事件。"
+			},
+			{
+				name: "ready",
+				payload: "api",
+				desc: "透传 MyBorderLayout.ready。"
+			}
+		],
+		methods: [
+			{
+				sig: "open(region, item)",
+				ret: "Object | null",
+				desc: "在指定区域打开面板。region 支持 north|top · west|left · east|right · south|bottom · center。"
+			},
+			{
+				sig: "openTab(item, region, name?) / closeTab(tabName, region, name?)",
+				ret: "Object | Boolean",
+				desc: "在区域面板里打开 / 关闭 tab（面板没有 tab 配置则自动创建承载面板）；name 缺省取该区域当前激活面板。"
+			},
+			{
+				sig: "closeOtherTabs(tabName, region, name?) / closeAllTabs(region, name?)",
+				ret: "Boolean",
+				desc: "关闭其它 / 全部标签。"
+			},
+			{
+				sig: "setActiveTab(tabName, region, name?) / refreshTab(tabName, region, name?)",
+				ret: "Boolean",
+				desc: "激活 / 刷新标签（刷新即重建内容）。"
+			},
+			{
+				sig: "getTabs(region, name?) / getActiveTab(region, name?)",
+				ret: "Array | String",
+				desc: "读取区域面板的标签列表 / 当前标签 name。"
+			},
+			{
+				sig: "openBody(name, options?)",
+				ret: "Object | null",
+				desc: "中间打开内容页。options.layout 支持 \"lcr\"（左中右，west+east）与 \"lcrs\"（左中右下，west+east+south）；不传则仅中间。"
+			},
+			{
+				sig: "openDefault()",
+				ret: "Object | null",
+				desc: "打开中间默认页（regions.center 激活面板，无则新建 mainBody 默认页）。"
+			},
+			{
+				sig: "show(region, name?) / hide(region, name?)",
+				ret: "Boolean",
+				desc: "【显隐唯一入口】显示 / 隐藏区域内面板，name 缺省取该区域当前激活面板。区域可见性由面板派生：隐藏当前面板即收起整个区域，再 show(region) 即原样展开。面板配了 parentName 时，隐藏 / 关闭后回到上级。region 支持 north|top · west|left · east|right · south|bottom；center 永远占位，不做区域显隐。"
+			},
+			{
+				sig: "isVisible(region) / toggleRegion(region, name?)",
+				ret: "Boolean",
+				desc: "查询区域是否可见 / 按当前可见状态在 show 与 hide 之间切换。"
+			},
+			{
+				sig: "getLayout()",
+				ret: "MyBorderLayout API",
+				desc: "返回内部 MyBorderLayout 实例，可调用其全部方法（up / down / max / restore 等）。"
+			}
+		],
+		slots: [{
+			name: "north / west / east / south / default",
+			scope: "{ item, panelProps }",
+			desc: "透传给 MyBorderLayout 的同名区域插槽。"
+		}]
+	},
+	{
+		name: "MyPanel",
+		desc: "通用面板控件（不依赖任何布局）。标题栏 + 内容区 + 底部，支持最小化 / 最大化 / 关闭 / 刷新按钮。不含布局专用参数（region / maxed 等由所属布局管理）：面板通过 data-layout-id + data-region 两个 DOM 属性反查所属布局与区域，独立使用与放入 MyBorderLayout / MyGridLayout 区域时按钮行为自动切换（委托给布局 vs 仅 emit）。",
+		props: [
+			{
+				name: "name",
+				type: "String",
+				default: "''",
+				desc: "面板唯一标识（区域内唯一）。"
+			},
+			{
+				name: "title",
+				type: "String",
+				default: "''",
+				desc: "面板标题。"
+			},
+			{
+				name: "iconCls / icon",
+				type: "String",
+				default: "''",
+				desc: "图标文本（icon 是 iconCls 的简写别名）。"
+			},
+			{
+				name: "hasTitle",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示标题区。"
+			},
+			{
+				name: "hasSubTitle",
+				type: "Boolean",
+				default: "false",
+				desc: "是否显示副标题。"
+			},
+			{
+				name: "subTitle",
+				type: "String",
+				default: "''",
+				desc: "副标题文本。"
+			},
+			{
+				name: "hasTool",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示工具栏插槽区。"
+			},
+			{
+				name: "hasFooter",
+				type: "Boolean",
+				default: "false",
+				desc: "是否显示底部区。"
+			},
+			{
+				name: "footer",
+				type: "String",
+				default: "''",
+				desc: "底部文本（默认插槽内容）。"
+			},
+			{
+				name: "border",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示边框。"
+			},
+			{
+				name: "scroll",
+				type: "Boolean",
+				default: "true",
+				desc: "内容区是否可滚动。"
+			},
+			{
+				name: "noscroll",
+				type: "Boolean",
+				default: "false",
+				desc: "强制隐藏滚动（优先级高于 scroll）。"
+			},
+			{
+				name: "opacity",
+				type: "Number | String",
+				default: "''",
+				desc: "透明度（0-1）。"
+			},
+			{
+				name: "float",
+				type: "Boolean",
+				default: "false",
+				desc: "是否浮动样式（带阴影）。"
+			},
+			{
+				name: "headerHeight",
+				type: "Number",
+				default: "34",
+				desc: "标题栏高度（px）。"
+			},
+			{
+				name: "bodyPadding",
+				type: "String",
+				default: "'10px 12px'",
+				desc: "内容区内边距。"
+			},
+			{
+				name: "panelClass / headerClass / bodyClass",
+				type: "String",
+				default: "''",
+				desc: "自定义类名。"
+			},
+			{
+				name: "panelStyle / headerStyle / bodyStyle",
+				type: "Object | String",
+				default: "null",
+				desc: "自定义样式。"
+			},
+			{
+				name: "theme",
+				type: "String",
+				default: "''",
+				desc: "主题。"
+			},
+			{
+				name: "min",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示最小化按钮（布局区域内 center 区域强制为 false）。"
+			},
+			{
+				name: "max",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示最大化按钮（布局区域内为区域最大化，已最大化时切换为还原按钮）。"
+			},
+			{
+				name: "close",
+				type: "Boolean",
+				default: "false",
+				desc: "是否显示关闭按钮。"
+			},
+			{
+				name: "refresh",
+				type: "Boolean",
+				default: "false",
+				desc: "是否显示刷新按钮。"
+			}
+		],
+		emits: [
+			{
+				name: "min",
+				payload: "{ region, name }",
+				desc: "点击最小化按钮（独立使用时触发；布局区域内改为 hide，区域随之收起）。"
+			},
+			{
+				name: "max",
+				payload: "{ region, name }",
+				desc: "点击最大化按钮（独立使用时触发；布局区域内由布局处理区域最大化）。"
+			},
+			{
+				name: "restore",
+				payload: "{ region, name }",
+				desc: "还原 —— 最大化还原 / 从最小化展开（即 min / max 的反向动作）。"
+			},
+			{
+				name: "close",
+				payload: "{ region, name }",
+				desc: "点击关闭按钮。"
+			},
+			{
+				name: "refresh",
+				payload: "{ region, name }",
+				desc: "点击刷新按钮。"
+			}
+		],
+		methods: [],
+		slots: [
+			{
+				name: "leftTool",
+				scope: "—",
+				desc: "标题左侧工具区（在标题之前）。"
+			},
+			{
+				name: "title",
+				scope: "—",
+				desc: "自定义标题区（替换默认 icon + title + subtitle）。"
+			},
+			{
+				name: "actions",
+				scope: "—",
+				desc: "标题栏工具区（标题与按钮之间，flex:1）。"
+			},
+			{
+				name: "default",
+				scope: "—",
+				desc: "内容区。"
+			},
+			{
+				name: "footer",
+				scope: "—",
+				desc: "底部区（覆盖 footer prop 文本）。"
+			}
+		]
+	},
+	{
+		name: "MyPanelContent",
+		desc: "面板内容渲染器。按优先级 component > url > html > 默认插槽 渲染面板内容，支持参数传递（组件 props / URL query 参数）与组件路径懒加载。可独立使用，也是 MyBorderLayout 区域插槽的默认 fallback。",
+		props: [{
+			name: "item",
+			type: "Object",
+			default: "{}",
+			desc: "面板 item，承载内容来源与参数（见下方「内容来源字段」）。"
+		}],
+		emits: [],
+		methods: [],
+		slots: [{
+			name: "default",
+			scope: "—",
+			desc: "item.component / url / html 均未定义时的回退内容。"
+		}, {
+			name: "内容来源字段（item 内）",
+			scope: "—",
+			desc: "component: 组件对象 / 全局名字符串 / 相对项目根目录路径字符串（如 /src/views/Foo.vue，按 import.meta.glob 懒加载）｜props: 组件 props｜url: iframe 地址｜params: URL query 参数对象（→ ?k=v&...）｜html: HTML 字符串（v-html）。"
+		}]
+	},
+	{
+		name: "MyTabs",
+		desc: "多标签容器。标签栏（top / bottom / left / right）+ 内容区，内容按 MyPanelContent 的优先级渲染（component > url(+params) > html > tab:{name} 具名插槽）。标签默认首次激活才挂载、之后保留状态（lazy:false 立即挂载，reload:true 每次激活重建，refreshAt 变化即重建）；右键菜单内置关闭 / 关闭其它 / 关闭全部 / 刷新（点击别处 / Esc / 滚动 / 鼠标移出范围时关闭）。左右布局下 titleVertical 可让标签文字竖排。受控 / 非受控皆可；位于 MyBorderLayout 区域内时，切换 / 关闭 / 刷新经布局注册表上报（notifyTab），标签数据由所在面板的 tab 配置统一维护。",
+		props: [
+			{
+				name: "items",
+				type: "Array",
+				default: "[]",
+				desc: "标签项数组：[{ name, title, iconCls?, closable?, disabled?, lazy?, reload?, menu?, url(+params) / html / component(+props) }]。"
+			},
+			{
+				name: "active",
+				type: "String",
+				default: "''",
+				desc: "当前标签 name；传了即以它为准（受控），空值由组件内部维护。"
+			},
+			{
+				name: "position",
+				type: "String",
+				default: "'top'",
+				desc: "标签栏位置：top / bottom / left / right。"
+			},
+			{
+				name: "closable",
+				type: "Boolean",
+				default: "false",
+				desc: "是否允许关闭（标签项 closable 可单独覆盖）。"
+			},
+			{
+				name: "hasTool",
+				type: "Boolean",
+				default: "false",
+				desc: "显示标签栏尾部工具栏（tool 插槽）。"
+			},
+			{
+				name: "contextmenu",
+				type: "Boolean",
+				default: "false",
+				desc: "启用标签右键菜单（打开前先激活该标签）。"
+			},
+			{
+				name: "menu",
+				type: "Array",
+				default: "null",
+				desc: "右键菜单项：[{ name, title, iconCls?, disabled?, divided?, handler? }]；缺省用内置项（关闭 / 关闭其它 / 关闭全部 / 刷新），标签项的 menu 可单独覆盖。"
+			},
+			{
+				name: "titleVertical",
+				type: "Boolean",
+				default: "false",
+				desc: "标签文字竖直排列（仅 position 为 left / right 生效）。"
+			},
+			{
+				name: "tabsClass",
+				type: "String",
+				default: "''",
+				desc: "附加类名（自定义标签栏样式）。"
+			},
+			{
+				name: "panelName",
+				type: "String",
+				default: "''",
+				desc: "所属面板 name（位于布局区域内时用于上报切换 / 关闭）。"
+			},
+			{
+				name: "theme",
+				type: "String",
+				default: "''",
+				desc: "主题：空值继承父级。"
+			}
+		],
+		emits: [
+			{
+				name: "update:active",
+				payload: "String",
+				desc: "当前标签变化（v-model:active）。"
+			},
+			{
+				name: "change",
+				payload: "{ name, item }",
+				desc: "切换标签。"
+			},
+			{
+				name: "close",
+				payload: "{ name, item }",
+				desc: "标签被关闭（关闭按钮 / 右键菜单，关闭其它 · 全部时每个被移除的标签发一次）。"
+			},
+			{
+				name: "refresh",
+				payload: "{ name, item }",
+				desc: "标签被刷新（重建内容）。"
+			},
+			{
+				name: "contextmenu",
+				payload: "{ name, item, event }",
+				desc: "标签上右键（contextmenu 关闭时也发，仅作通知）。"
+			},
+			{
+				name: "menu-select",
+				payload: "{ action, name, item }",
+				desc: "右键菜单里的自定义项被点击（内置项不触发）。"
+			}
+		],
+		methods: [
+			{
+				sig: "setActive(name)",
+				ret: "Boolean",
+				desc: "激活标签。"
+			},
+			{
+				sig: "close(name)",
+				ret: "Boolean",
+				desc: "关闭标签。"
+			},
+			{
+				sig: "closeOthers(name) / closeAll()",
+				ret: "Boolean",
+				desc: "关闭其它 / 全部标签。"
+			},
+			{
+				sig: "refresh(name?)",
+				ret: "Boolean",
+				desc: "刷新标签（重建内容），name 缺省取当前标签。"
+			}
+		],
+		slots: [
+			{
+				name: "tab:{name}",
+				scope: "{ item }",
+				desc: "按标签 name 命名的内容插槽，优先于 item 的 component / url / html。"
+			},
+			{
+				name: "tool",
+				scope: "—",
+				desc: "标签栏尾部工具栏内容。"
+			},
+			{
+				name: "menu",
+				scope: "{ items, item, run, close }",
+				desc: "自定义右键菜单（替换内置菜单渲染）。"
+			},
+			{
+				name: "empty",
+				scope: "—",
+				desc: "没有标签（或当前标签不存在）时的兜底内容。"
+			}
+		]
+	},
+	{
+		name: "MySplitter",
+		desc: "分割条。默认只显示居中握把，悬浮展开成按钮组（[收缩][最大化] 或 [最大化][收缩]，east/south 顺序相反）。已最大化时不显示最大化按钮（也不切换为还原图标）。区域完全隐藏后退化为贴边浮动伸缩按钮。",
+		props: [
+			{
+				name: "direction",
+				type: "String",
+				default: "'v-left'",
+				desc: "方向：v-left/v-right/h-top/h-bottom。决定拖拽轴向、按钮排布、图标方向。"
+			},
+			{
+				name: "min",
+				type: "Number",
+				default: "60",
+				desc: "拖拽最小尺寸（px）。"
+			},
+			{
+				name: "max",
+				type: "Number",
+				default: "800",
+				desc: "拖拽最大尺寸（px）。"
+			},
+			{
+				name: "step",
+				type: "Number",
+				default: "1",
+				desc: "拖拽步进（>1 时按步取整）。"
+			},
+			{
+				name: "split",
+				type: "Boolean",
+				default: "true",
+				desc: "是否可拖拽。"
+			},
+			{
+				name: "collapsible",
+				type: "Boolean",
+				default: "false",
+				desc: "是否显示收缩 / 展开按钮。"
+			},
+			{
+				name: "maxBtn",
+				type: "Boolean",
+				default: "false",
+				desc: "是否显示最大化按钮。"
+			},
+			{
+				name: "maxed",
+				type: "Boolean",
+				default: "false",
+				desc: "当前区域是否处于最大化态（true 时隐藏最大化按钮）。"
+			},
+			{
+				name: "collapsed",
+				type: "Boolean",
+				default: "false",
+				desc: "当前区域是否处于收缩态（影响图标方向）。"
+			},
+			{
+				name: "hidden",
+				type: "Boolean",
+				default: "false",
+				desc: "区域完全隐藏，分割条退化为贴边浮动伸缩按钮。"
+			},
+			{
+				name: "dual",
+				type: "Boolean",
+				default: "false",
+				desc: "双向收缩模式（栅格布局用）：分割条两侧各控制一个收缩目标。"
+			},
+			{
+				name: "nextCollapsed",
+				type: "Boolean",
+				default: "false",
+				desc: "dual 模式下另一侧是否已收缩。"
+			},
+			{
+				name: "nextCollapsible",
+				type: "Boolean",
+				default: "false",
+				desc: "dual 模式下另一侧是否显示收缩按钮。"
+			},
+			{
+				name: "hoverReveal",
+				type: "Boolean",
+				default: "true",
+				desc: "是否启用「悬浮才展开按钮组」（false 时按钮常显）。"
+			}
+		],
+		emits: [
+			{
+				name: "dragStart",
+				payload: "{ clientPos, setStartSize }",
+				desc: "拖拽开始；setStartSize 用于父组件回填起始尺寸。"
+			},
+			{
+				name: "dragMove",
+				payload: "size (px)",
+				desc: "拖拽移动（已限制在 min/max 内）。"
+			},
+			{
+				name: "dragEnd",
+				payload: "MouseEvent",
+				desc: "拖拽结束。"
+			},
+			{
+				name: "toggle",
+				payload: "—",
+				desc: "点击收缩 / 展开按钮。"
+			},
+			{
+				name: "toggleNext",
+				payload: "—",
+				desc: "dual 模式下点击另一侧的收缩按钮。"
+			},
+			{
+				name: "max",
+				payload: "—",
+				desc: "点击最大化按钮。"
+			}
+		],
+		methods: [],
+		slots: []
+	},
+	{
+		name: "MyFloatPanel",
+		desc: "悬浮面板。位置参数采用 offset 语义：字符串对齐（auto=居中 / t / r / b / l / lt / lb / rt / rb）、4 边偏移对象、数字顶部偏移。支持标题栏拖拽移动（move）、左下 / 右下角 resize、最大化 / 还原 / 关闭、模态遮罩（shade）。默认挂载到 body，container 可指定容器（拖动范围约束在容器内）。",
+		props: [
+			{
+				name: "title",
+				type: "String",
+				default: "''",
+				desc: "标题。"
+			},
+			{
+				name: "hasTitle",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示标题栏。"
+			},
+			{
+				name: "close",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示关闭按钮。"
+			},
+			{
+				name: "max",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示最大化按钮。"
+			},
+			{
+				name: "min",
+				type: "Boolean",
+				default: "true",
+				desc: "最小化按钮（当前未渲染）。"
+			},
+			{
+				name: "maxed",
+				type: "Boolean",
+				default: "false",
+				desc: "初始即最大化。"
+			},
+			{
+				name: "width / height",
+				type: "Number | String",
+				default: "360 / 280",
+				desc: "面板宽高（px）。"
+			},
+			{
+				name: "offset",
+				type: "String | Object | Number",
+				default: "'auto'",
+				desc: "位置：字符串对齐 auto/t/r/b/l/lt/rt/lb/rb（auto=居中）｜对象 { top, left, right, bottom }（4 边偏移，px 或 \"NN%\"）｜数字（顶部偏移）。"
+			},
+			{
+				name: "fixed",
+				type: "Boolean",
+				default: "true",
+				desc: "是否固定定位：true=fixed 跟随视口；false=absolute 含 scroll 偏移。"
+			},
+			{
+				name: "resize",
+				type: "Boolean",
+				default: "true",
+				desc: "是否可拖拽 resize。"
+			},
+			{
+				name: "minWidth / minHeight",
+				type: "Number",
+				default: "200 / 140",
+				desc: "resize 最小尺寸。"
+			},
+			{
+				name: "maxWidth / maxHeight",
+				type: "Number",
+				default: "2000",
+				desc: "resize 最大尺寸。"
+			},
+			{
+				name: "shade",
+				type: "Boolean | Number",
+				default: "false",
+				desc: "模态遮罩：true=默认遮罩；数字=透明度；false=无遮罩（带遮罩时自动居中）。"
+			},
+			{
+				name: "shadeClose",
+				type: "Boolean",
+				default: "false",
+				desc: "shade 时点击遮罩是否关闭。"
+			},
+			{
+				name: "zIndex",
+				type: "Number",
+				default: "999",
+				desc: "层级。"
+			},
+			{
+				name: "visible",
+				type: "Boolean",
+				default: "true",
+				desc: "是否显示。"
+			},
+			{
+				name: "container",
+				type: "String",
+				default: "'body'",
+				desc: "挂载容器：body 或 CSS 选择器。"
+			},
+			{
+				name: "move",
+				type: "Boolean",
+				default: "true",
+				desc: "是否允许拖拽标题栏移动。"
+			},
+			{
+				name: "theme",
+				type: "String",
+				default: "''",
+				desc: "主题。"
+			}
+		],
+		emits: [
+			{
+				name: "update:visible",
+				payload: "Boolean",
+				desc: "可见性变化（v-model:visible）。"
+			},
+			{
+				name: "close",
+				payload: "—",
+				desc: "关闭。"
+			},
+			{
+				name: "max",
+				payload: "—",
+				desc: "最大化。"
+			},
+			{
+				name: "restore",
+				payload: "—",
+				desc: "还原。"
+			},
+			{
+				name: "move",
+				payload: "{ left, top }",
+				desc: "拖拽移动（相对容器的 left/top）。"
+			},
+			{
+				name: "resize",
+				payload: "{ width, height, left, top }",
+				desc: "拖拽 resize。"
+			}
+		],
+		methods: [],
+		slots: [{
+			name: "title",
+			scope: "—",
+			desc: "自定义标题区。"
+		}, {
+			name: "default",
+			scope: "—",
+			desc: "内容区。"
+		}]
+	},
+	{
+		name: "MyGridLayout",
+		desc: "栅格布局容器。基于 12 分栏比例系统，支持四分屏、左右布局等场景。每个单元格通过 layoutNum（1..12 占比，>12 固定像素）声明尺寸，layoutType=h（先水平后竖直）或 v（先竖直后水平）。行/单元格之间插入 MySplitter 可拖拽、双向收缩。面板最大化默认填满整个布局或页面。",
+		props: [
+			{
+				name: "layoutId",
+				type: "String",
+				default: "''",
+				desc: "布局标识（缺省自动生成）。"
+			},
+			{
+				name: "layoutType",
+				type: "String",
+				default: "'h'",
+				desc: "排列方向：h（先水平后竖直，换行成行）/ v（先竖直后水平，换列成列）。"
+			},
+			{
+				name: "theme",
+				type: "String",
+				default: "''",
+				desc: "主题。"
+			},
+			{
+				name: "maxType",
+				type: "String",
+				default: "'center'",
+				desc: "最大化类型：center / layout（整个布局） / page（整个页面）。"
+			},
+			{
+				name: "items",
+				type: "Array",
+				default: "[]",
+				desc: "单元格集合：[{ name, title, layoutNum, split, collapsible, max, border, ...MyPanel 参数 }]。"
+			},
+			{
+				name: "split",
+				type: "Boolean",
+				default: "false",
+				desc: "分割条是否可拖拽（全局默认，单元格 item 可覆盖）。"
+			},
+			{
+				name: "collapsible",
+				type: "Boolean",
+				default: "false",
+				desc: "分割条是否显示收缩按钮（全局默认）。"
+			},
+			{
+				name: "border",
+				type: "Boolean",
+				default: "true",
+				desc: "单元格边框（全局默认）。"
+			},
+			{
+				name: "min",
+				type: "Boolean",
+				default: "false",
+				desc: "面板最小化按钮（全局默认）。"
+			},
+			{
+				name: "max",
+				type: "Boolean",
+				default: "true",
+				desc: "面板最大化按钮（全局默认）。"
+			},
+			{
+				name: "close",
+				type: "Boolean",
+				default: "false",
+				desc: "面板关闭按钮（全局默认）。"
+			},
+			{
+				name: "animate",
+				type: "Boolean",
+				default: "true",
+				desc: "是否启用过渡动画。"
+			}
+		],
+		emits: [
+			{
+				name: "max",
+				payload: "{ key, name }",
+				desc: "单元格最大化。"
+			},
+			{
+				name: "restore",
+				payload: "{ key }",
+				desc: "还原。"
+			},
+			{
+				name: "split",
+				payload: "{ axis, index|key, size }",
+				desc: "分割条拖拽（axis: line/cell）。"
+			},
+			{
+				name: "close",
+				payload: "{ key }",
+				desc: "单元格关闭 / 最小化触发隐藏。"
+			}
+		],
+		methods: [
+			{
+				sig: "max(key)",
+				ret: "void",
+				desc: "最大化指定单元格（简写）。"
+			},
+			{
+				sig: "restore()",
+				ret: "void",
+				desc: "还原。"
+			},
+			{
+				sig: "maxed(key)",
+				ret: "Boolean",
+				desc: "判断指定单元格是否处于最大化态（简写）。"
+			},
+			{
+				sig: "hide(key) / show(key)",
+				ret: "void",
+				desc: "隐藏 / 显示单元格。"
+			},
+			{
+				sig: "toggleLine(lineIdx) / toggleCell(cell)",
+				ret: "void",
+				desc: "切换整行 / 整列 / 单元格隐藏。"
+			},
+			{
+				sig: "notifyPanel(action, region)",
+				ret: "Boolean",
+				desc: "面板事件委托入口（action: min / max / restore / close；min 即 hide）。"
+			}
+		],
+		slots: [{
+			name: "{cell._key}",
+			scope: "{ cell }",
+			desc: "按单元格 key（默认 name）命名的具名插槽。"
+		}]
+	},
+	{
+		name: "Composables（组合式函数）",
+		desc: "主题、布局注册表、面板参数归一化等工具。",
+		props: [],
+		emits: [],
+		methods: [
+			{
+				sig: "import { normalizeTheme, themeClass, useThemeContext, THEMES, DEFAULT_THEME } from '.../composables/theme.js'",
+				ret: "—",
+				desc: "主题工具：normalizeTheme(str) 归一化；themeClass(theme) 返回类名；useThemeContext(props) 解析自身与父级主题。"
+			},
+			{
+				sig: "import { ROOT_LAYOUT_ID, genLayoutId, makeChildLayoutId, registerLayout, unregisterLayout, getLayout, hasLayout, listLayoutIds } from '.../composables/layoutRegistry.js'",
+				ret: "—",
+				desc: "布局注册表：用于嵌套布局 / 面板反查所属布局。makeChildLayoutId(parent, region, name) 生成子布局 id。"
+			},
+			{
+				sig: "import { normalizePanelItem, toPanelProps, normalizeMaxType, REGION_DEFAULTS, PANEL_DEFAULTS, REGION_SHOW_DEFAULTS, REGION_SIZE_DEFAULTS } from '.../composables/panelItem.js'",
+				ret: "—",
+				desc: "面板 / 区域 item 参数工具：归一化与挑选可 v-bind 的面板参数。"
+			}
+		],
+		slots: []
+	}
+], Vt = { class: "my-api-doc__dialog" }, Ht = { class: "my-api-doc__body" }, Ut = { class: "my-api-doc__nav" }, Wt = ["onClick"], Gt = {
 	key: 0,
 	class: "my-api-doc__content"
-}, Gt = { class: "my-api-doc__comp-name" }, Kt = { class: "my-api-doc__comp-desc" }, qt = { key: 0 }, Jt = { class: "my-api-doc__table" }, Yt = { class: "c-name" }, Xt = { class: "c-type" }, Zt = { class: "c-default" }, Qt = { key: 1 }, $t = { class: "my-api-doc__table" }, en = { class: "c-name" }, tn = { class: "c-payload" }, nn = { key: 2 }, rn = { class: "my-api-doc__table" }, an = { class: "c-sig" }, on = { class: "c-ret" }, sn = { key: 3 }, cn = { class: "my-api-doc__table" }, ln = { class: "c-name" }, un = { class: "c-scope" }, dn = /*#__PURE__*/ j({
+}, Kt = { class: "my-api-doc__comp-name" }, qt = { class: "my-api-doc__comp-desc" }, Jt = { key: 0 }, Yt = { class: "my-api-doc__table" }, Xt = { class: "c-name" }, Zt = { class: "c-type" }, Qt = { class: "c-default" }, $t = { key: 1 }, en = { class: "my-api-doc__table" }, tn = { class: "c-name" }, nn = { class: "c-payload" }, rn = { key: 2 }, an = { class: "my-api-doc__table" }, on = { class: "c-sig" }, sn = { class: "c-ret" }, cn = { key: 3 }, ln = { class: "my-api-doc__table" }, un = { class: "c-name" }, dn = { class: "c-scope" }, fn = /*#__PURE__*/ j({
 	__name: "MyApiDoc",
 	props: {
 		visible: {
@@ -3231,1395 +4552,74 @@ var yt = [
 	},
 	emits: ["update:visible", "close"],
 	setup(s, { emit: c }) {
-		let l = s, u = c, d = n(() => we(l.theme)), f = [
-			{
-				name: "MyBorderLayout",
-				desc: "核心 Border 布局容器。五区（north / west / center / east / south）CSS Grid 实现，支持嵌套布局、区域优先级、最大化（center / layout / page）、面板导航、区域悬浮（item.float）与区域面板多标签（item.tab）。",
-				props: [
-					{
-						name: "layoutId",
-						type: "String",
-						default: "'BorderLayout'",
-						desc: "布局唯一标识；嵌套布局通过 layoutId 体系定位。"
-					},
-					{
-						name: "parentLayoutId",
-						type: "String",
-						default: "''",
-						desc: "父布局 id（子布局自动带出，用于向上追溯）。"
-					},
-					{
-						name: "regionLevel",
-						type: "String | Number",
-						default: "'ns'",
-						desc: "区域优先级：ns(上下左右) / ew(左右上下) / nws(上左下右) / nwe(上左右下)，也接受 1/2/3/4 与全称。"
-					},
-					{
-						name: "maxType",
-						type: "String",
-						default: "'center'",
-						desc: "全局默认最大化类型：center(覆盖自身+中间) / layout(整个布局) / page(整个页面+全屏)。优先级：item.maxType > regions[region].maxType > 全局 maxType > \"center\"。"
-					},
-					{
-						name: "animate",
-						type: "Boolean",
-						default: "true",
-						desc: "是否启用尺寸 / 最大化过渡动画。"
-					},
-					{
-						name: "animationDuration",
-						type: "Number",
-						default: "260",
-						desc: "动画时长（毫秒）。"
-					},
-					{
-						name: "regions",
-						type: "Object",
-						default: "{}",
-						desc: "区域配置：{ north:{active,panels,show}, west:{...}, center:{...}, east:{...}, south:{...} }。每个 panel item 参数集 ≈ MyPanel，另加布局参数 float（区域悬浮在中间区域之上）/ tab（{ items, active, position, closable, hasTool, contextmenu, menu, titleVertical } 多标签）。"
-					},
-					{
-						name: "autoPanel",
-						type: "Boolean",
-						default: "false",
-						desc: "true 时区域自动包一层 MyPanel，插槽内容作为面板 body。"
-					},
-					{
-						name: "theme",
-						type: "String",
-						default: "''",
-						desc: "主题：空值继承父级；light / light-blue / dark。"
-					}
-				],
-				emits: [
-					{
-						name: "update:regions",
-						payload: "Object",
-						desc: "regions 变化（v-model:regions）。"
-					},
-					{
-						name: "update:sizes",
-						payload: "Object",
-						desc: "区域尺寸变化（拖拽时）。"
-					},
-					{
-						name: "show",
-						payload: "{ region, name, layoutId, tab? }",
-						desc: "面板 / 区域显示 —— 打开 / 激活面板、展开区域都走这里；tab 相关动作附 tab（标签 name）。"
-					},
-					{
-						name: "hide",
-						payload: "{ region, name, layoutId }",
-						desc: "面板 / 区域隐藏 —— 面板最小化按钮也走这里，区域随之收起。"
-					},
-					{
-						name: "max",
-						payload: "{ region, name, layoutId, mode }",
-						desc: "区域最大化。"
-					},
-					{
-						name: "restore",
-						payload: "{ region, name, layoutId }",
-						desc: "区域还原。"
-					},
-					{
-						name: "close",
-						payload: "{ region, name, layoutId, tab? }",
-						desc: "面板关闭并移除；带 tab 时表示关闭的是该标签（面板保留）。"
-					},
-					{
-						name: "split",
-						payload: "{ region, name, layoutId, size }",
-						desc: "分割条拖拽移动。"
-					},
-					{
-						name: "refresh",
-						payload: "{ region, name, layoutId, tab? }",
-						desc: "面板 / 标签刷新（面板刷新按钮或标签右键菜单）；带 tab 时表示刷新的是该标签（重建内容）。"
-					},
-					{
-						name: "menu-select",
-						payload: "{ region, name, layoutId, tab, action }",
-						desc: "标签右键菜单里的自定义项被点击（内置的关闭 / 关闭其它 / 关闭全部 / 刷新走 close / refresh 事件）。"
-					},
-					{
-						name: "ready",
-						payload: "api",
-						desc: "组件挂载完成，回传完整 API 实例。"
-					}
-				],
-				methods: [
-					{
-						sig: "getCurName(region, layoutId?)",
-						ret: "String | null",
-						desc: "获取区域当前激活面板 name。"
-					},
-					{
-						sig: "getItem(region, name?, layoutId?)",
-						ret: "Object",
-						desc: "读取面板 item 配置；name 空取当前激活。"
-					},
-					{
-						sig: "exist(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "面板是否存在。"
-					},
-					{
-						sig: "isActive(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "name 是否为当前激活且区域未收缩。"
-					},
-					{
-						sig: "getPanels(region, layoutId?)",
-						ret: "Array",
-						desc: "返回区域面板数组（副本）。"
-					},
-					{
-						sig: "open(region, item, layoutId?)",
-						ret: "Object | null",
-						desc: "打开面板（同名则显示并激活）—— 显示 / 激活面板统一走 show。item: { name, title, ...MyPanel 参数, 内容来源 url(+params) / html / component(+props，支持对象·全局名·相对项目根目录路径) }。"
-					},
-					{
-						sig: "openTab(item, region?, name?, layoutId?)",
-						ret: "Object | null",
-						desc: "在区域面板里打开 tab（面板没有 tab 配置则就地建一个承载面板）。item: { name, title, iconCls?, url(+params) / html / component(+props) }；新建承载面板时 item 上的 position / closable / hasTool / contextmenu / menu / titleVertical 一并作为 tab 配置（默认可关闭）；name 缺省取该区域当前激活面板，tab 同名则更新并激活。"
-					},
-					{
-						sig: "closeTab(tabName, region?, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "关闭 tab（移除标签）；关的是当前标签则激活相邻标签，面板保留。"
-					},
-					{
-						sig: "closeOtherTabs(tabName, region?, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "关闭其它标签（保留 tabName），每个被移除的标签发一次 close 事件。"
-					},
-					{
-						sig: "closeAllTabs(region?, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "关闭全部标签，每个被移除的标签发一次 close 事件。"
-					},
-					{
-						sig: "setActiveTab(tabName, region?, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "激活已存在的 tab。"
-					},
-					{
-						sig: "refreshTab(tabName?, region?, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "刷新标签（重建内容），tabName 缺省取当前标签；发 refresh 事件（附 tab）。"
-					},
-					{
-						sig: "refresh(region?, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "刷新面板：带 tab 的面板刷新其当前标签，否则只发 refresh 事件（面板刷新按钮也走这里）。"
-					},
-					{
-						sig: "getTabs(region?, name?, layoutId?) / getActiveTab(region?, name?, layoutId?)",
-						ret: "Array | String",
-						desc: "读取区域面板的标签列表 / 当前标签 name。"
-					},
-					{
-						sig: "notifyTab(action, region, name?, tabName?, extra?)",
-						ret: "Boolean",
-						desc: "MyTabs 委托入口（action: change / close / closeOthers / closeAll / refresh / menu）。"
-					},
-					{
-						sig: "remove(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "关闭并移除面板；有上级（parentName）则回到上级面板，否则切到区域内其它可见面板。"
-					},
-					{
-						sig: "removeActive(region, layoutId?)",
-						ret: "Boolean",
-						desc: "移除当前激活面板。"
-					},
-					{
-						sig: "removeAll(region, layoutId?)",
-						ret: "void",
-						desc: "清空区域所有面板。"
-					},
-					{
-						sig: "show(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "【显隐唯一入口】显示面板并激活（同时解开隐藏），区域随之出现。name 缺省取该区域当前激活面板；没有托管面板的区域（内容全走插槽）改为启用区域。"
-					},
-					{
-						sig: "hide(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "【显隐唯一入口】隐藏某面板（不删除）。有上级（parentName）则回到上级面板，区域回到上级内容；无上级则激活仍指向它，区域随之收起，再 show(region) 即原样展开。没有托管面板的区域改为停用区域。"
-					},
-					{
-						sig: "isVisible(region, layoutId?)",
-						ret: "Boolean",
-						desc: "区域是否可见 —— 由「当前激活面板是否可见」派生；center 永远占位。"
-					},
-					{
-						sig: "prev(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "激活上一个可见面板（同级线性切换）。"
-					},
-					{
-						sig: "next(region, name?, layoutId?)",
-						ret: "Boolean",
-						desc: "激活下一个可见面板（同级线性切换）。"
-					},
-					{
-						sig: "getPrevName(region, name?, layoutId?)",
-						ret: "String | null",
-						desc: "上一个面板 name（不切换）。"
-					},
-					{
-						sig: "getNextName(region, name?, layoutId?)",
-						ret: "String | null",
-						desc: "下一个面板 name（不切换）。"
-					},
-					{
-						sig: "up(region, name?, layoutId?) / getUpName(region, name?, layoutId?)",
-						ret: "Boolean | String | null",
-						desc: "上下级导航：激活 / 读取上级面板（parentName 指向的同区域面板，不存在则为 null）。"
-					},
-					{
-						sig: "down(region, name?, layoutId?) / getDownName(region, name?, layoutId?)",
-						ret: "Boolean | String | null",
-						desc: "进入 / 读取下级面板：优先上级记录的最后一次进入（lastName），其次第一个可见下级。"
-					},
-					{
-						sig: "max(region, name?, layoutId?)",
-						ret: "void",
-						desc: "区域最大化（按 item / 区域 / 全局 maxType）。"
-					},
-					{
-						sig: "restore(region, name?, layoutId?)",
-						ret: "void",
-						desc: "区域还原。"
-					},
-					{
-						sig: "maxed(region)",
-						ret: "Boolean",
-						desc: "区域是否处于最大化态。"
-					},
-					{
-						sig: "setSize(region, size, layoutId?)",
-						ret: "void",
-						desc: "编程式设置区域尺寸（px）。"
-					},
-					{
-						sig: "resize(layoutId?)",
-						ret: "void",
-						desc: "刷新布局（尺寸由 CSS 决定）。"
-					},
-					{
-						sig: "notifyPanel(action, region, name?)",
-						ret: "Boolean",
-						desc: "MyPanel 委托入口（action: min / max / restore / close / refresh；min 即 hide）。"
-					},
-					{
-						sig: "getLayoutId() / getParentLayoutId() / getChildLayoutId(region, name?)",
-						ret: "String",
-						desc: "布局 id 体系（用于嵌套布局转发）。"
-					},
-					{
-						sig: "getSizes()",
-						ret: "Object",
-						desc: "当前区域尺寸快照 { north, south, west, east }。"
-					},
-					{
-						sig: "getRegionItem(region)",
-						ret: "Object",
-						desc: "当前激活面板的完整 item。"
-					}
-				],
-				slots: [
-					{
-						name: "north / west / east / south",
-						scope: "{ item, panelProps }",
-						desc: "区域默认插槽，渲染当前激活面板。"
-					},
-					{
-						name: "default",
-						scope: "{ item, panelProps }",
-						desc: "center 区域默认插槽。"
-					},
-					{
-						name: "north:{name} / west:{name} / center:{name} / east:{name} / south:{name}",
-						scope: "—",
-						desc: "按面板 name 命名的区域插槽，同名激活时优先渲染。"
-					},
-					{
-						name: "tab:{name}",
-						scope: "{ item }",
-						desc: "标签内容插槽：面板配了 tab 时区域渲染 MyTabs，标签内容优先取该插槽（其次 item 的 component / url / html）。"
-					},
-					{
-						name: "tab-tool",
-						scope: "{ region, item, tabs }",
-						desc: "标签栏尾部工具栏：区域内标签栏右上角的自定义按钮（区域转发给 MyTabs 的 tool 插槽）。"
-					},
-					{
-						name: "面板内容来源（item 字段）",
-						scope: "—",
-						desc: "未写具名插槽时，区域用 MyPanelContent 渲染：item.component（对象·全局名·相对路径，+props）→ item.url（iframe，+params 拼接 query）→ item.html（v-html）。"
-					}
-				]
-			},
-			{
-				name: "MyMainFrame",
-				desc: "主框架组件 = MyBorderLayout 的便捷封装，只保留一套显隐：区域内面板的 show / hide（区域可见性由面板派生，隐藏当前面板即收起该区域），外加区域可见性查询 isVisible 与切换 toggleRegion；中间内容页用 openBody 打开（layout 支持「左中右 lcr / 左中右下 lcrs」情景）。区域名支持 north|top · west|left · east|right · south|bottom · center。frameType=1 一张图（顶部+中间+底部），frameType=2 运维（含左侧栏）。区域面板的多标签用 openTab / closeTab / closeOtherTabs / closeAllTabs / setActiveTab / refreshTab 维护。",
-				props: [
-					{
-						name: "frameType",
-						type: "Number",
-						default: "2",
-						desc: "框架类型：1=一张图（无左右区域，强制 west/east 隐藏）；2=运维（含左侧栏）。"
-					},
-					{
-						name: "layoutId",
-						type: "String",
-						default: "'BorderLayout'",
-						desc: "透传 MyBorderLayout.layoutId。"
-					},
-					{
-						name: "parentLayoutId",
-						type: "String",
-						default: "''",
-						desc: "透传 MyBorderLayout.parentLayoutId。"
-					},
-					{
-						name: "regionLevel",
-						type: "String | Number",
-						default: "'ns'",
-						desc: "透传 MyBorderLayout.regionLevel。"
-					},
-					{
-						name: "maxType",
-						type: "String",
-						default: "'center'",
-						desc: "透传 MyBorderLayout.maxType（全局最大化类型默认值）。"
-					},
-					{
-						name: "animate",
-						type: "Boolean",
-						default: "true",
-						desc: "透传 MyBorderLayout.animate。"
-					},
-					{
-						name: "animationDuration",
-						type: "Number",
-						default: "260",
-						desc: "透传 MyBorderLayout.animationDuration。"
-					},
-					{
-						name: "regions",
-						type: "Object",
-						default: "{}",
-						desc: "透传 MyBorderLayout.regions。"
-					},
-					{
-						name: "theme",
-						type: "String",
-						default: "''",
-						desc: "透传 MyBorderLayout.theme。"
-					}
-				],
-				emits: [
-					{
-						name: "update:regions",
-						payload: "Object",
-						desc: "透传 MyBorderLayout.update:regions。"
-					},
-					{
-						name: "update:sizes",
-						payload: "Object",
-						desc: "透传 MyBorderLayout.update:sizes。"
-					},
-					{
-						name: "show",
-						payload: "{ region, name, layoutId, tab? }",
-						desc: "透传区域 / 面板显示事件；tab 相关动作附 tab。"
-					},
-					{
-						name: "hide",
-						payload: "{ region, name, layoutId }",
-						desc: "透传区域 / 面板隐藏事件。"
-					},
-					{
-						name: "max",
-						payload: "{ region, name, layoutId, mode }",
-						desc: "透传区域最大化事件。"
-					},
-					{
-						name: "restore",
-						payload: "{ region, name, layoutId }",
-						desc: "透传区域还原事件。"
-					},
-					{
-						name: "close",
-						payload: "{ region, name, layoutId, tab? }",
-						desc: "透传面板关闭事件；带 tab 时表示关闭的是标签。"
-					},
-					{
-						name: "split",
-						payload: "{ region, name, layoutId, size }",
-						desc: "透传分割条拖拽事件。"
-					},
-					{
-						name: "refresh",
-						payload: "{ region, name, layoutId, tab? }",
-						desc: "透传面板 / 标签刷新事件；带 tab 时表示刷新的是标签。"
-					},
-					{
-						name: "menu-select",
-						payload: "{ region, name, layoutId, tab, action }",
-						desc: "透传标签右键菜单自定义项点击事件。"
-					},
-					{
-						name: "ready",
-						payload: "api",
-						desc: "透传 MyBorderLayout.ready。"
-					}
-				],
-				methods: [
-					{
-						sig: "open(region, item)",
-						ret: "Object | null",
-						desc: "在指定区域打开面板。region 支持 north|top · west|left · east|right · south|bottom · center。"
-					},
-					{
-						sig: "openTab(item, region, name?) / closeTab(tabName, region, name?)",
-						ret: "Object | Boolean",
-						desc: "在区域面板里打开 / 关闭 tab（面板没有 tab 配置则自动创建承载面板）；name 缺省取该区域当前激活面板。"
-					},
-					{
-						sig: "closeOtherTabs(tabName, region, name?) / closeAllTabs(region, name?)",
-						ret: "Boolean",
-						desc: "关闭其它 / 全部标签。"
-					},
-					{
-						sig: "setActiveTab(tabName, region, name?) / refreshTab(tabName, region, name?)",
-						ret: "Boolean",
-						desc: "激活 / 刷新标签（刷新即重建内容）。"
-					},
-					{
-						sig: "getTabs(region, name?) / getActiveTab(region, name?)",
-						ret: "Array | String",
-						desc: "读取区域面板的标签列表 / 当前标签 name。"
-					},
-					{
-						sig: "openBody(name, options?)",
-						ret: "Object | null",
-						desc: "中间打开内容页。options.layout 支持 \"lcr\"（左中右，west+east）与 \"lcrs\"（左中右下，west+east+south）；不传则仅中间。"
-					},
-					{
-						sig: "openDefault()",
-						ret: "Object | null",
-						desc: "打开中间默认页（regions.center 激活面板，无则新建 mainBody 默认页）。"
-					},
-					{
-						sig: "show(region, name?) / hide(region, name?)",
-						ret: "Boolean",
-						desc: "【显隐唯一入口】显示 / 隐藏区域内面板，name 缺省取该区域当前激活面板。区域可见性由面板派生：隐藏当前面板即收起整个区域，再 show(region) 即原样展开。面板配了 parentName 时，隐藏 / 关闭后回到上级。region 支持 north|top · west|left · east|right · south|bottom；center 永远占位，不做区域显隐。"
-					},
-					{
-						sig: "isVisible(region) / toggleRegion(region, name?)",
-						ret: "Boolean",
-						desc: "查询区域是否可见 / 按当前可见状态在 show 与 hide 之间切换。"
-					},
-					{
-						sig: "getLayout()",
-						ret: "MyBorderLayout API",
-						desc: "返回内部 MyBorderLayout 实例，可调用其全部方法（up / down / max / restore 等）。"
-					}
-				],
-				slots: [{
-					name: "north / west / east / south / default",
-					scope: "{ item, panelProps }",
-					desc: "透传给 MyBorderLayout 的同名区域插槽。"
-				}]
-			},
-			{
-				name: "MyPanel",
-				desc: "通用面板控件（不依赖任何布局）。标题栏 + 内容区 + 底部，支持最小化 / 最大化 / 关闭 / 刷新按钮。不含布局专用参数（region / maxed 等由所属布局管理）：面板通过 data-layout-id + data-region 两个 DOM 属性反查所属布局与区域，独立使用与放入 MyBorderLayout / MyGridLayout 区域时按钮行为自动切换（委托给布局 vs 仅 emit）。",
-				props: [
-					{
-						name: "name",
-						type: "String",
-						default: "''",
-						desc: "面板唯一标识（区域内唯一）。"
-					},
-					{
-						name: "title",
-						type: "String",
-						default: "''",
-						desc: "面板标题。"
-					},
-					{
-						name: "iconCls / icon",
-						type: "String",
-						default: "''",
-						desc: "图标文本（icon 是 iconCls 的简写别名）。"
-					},
-					{
-						name: "hasTitle",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示标题区。"
-					},
-					{
-						name: "hasSubTitle",
-						type: "Boolean",
-						default: "false",
-						desc: "是否显示副标题。"
-					},
-					{
-						name: "subTitle",
-						type: "String",
-						default: "''",
-						desc: "副标题文本。"
-					},
-					{
-						name: "hasTool",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示工具栏插槽区。"
-					},
-					{
-						name: "hasFooter",
-						type: "Boolean",
-						default: "false",
-						desc: "是否显示底部区。"
-					},
-					{
-						name: "footer",
-						type: "String",
-						default: "''",
-						desc: "底部文本（默认插槽内容）。"
-					},
-					{
-						name: "border",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示边框。"
-					},
-					{
-						name: "scroll",
-						type: "Boolean",
-						default: "true",
-						desc: "内容区是否可滚动。"
-					},
-					{
-						name: "noscroll",
-						type: "Boolean",
-						default: "false",
-						desc: "强制隐藏滚动（优先级高于 scroll）。"
-					},
-					{
-						name: "opacity",
-						type: "Number | String",
-						default: "''",
-						desc: "透明度（0-1）。"
-					},
-					{
-						name: "float",
-						type: "Boolean",
-						default: "false",
-						desc: "是否浮动样式（带阴影）。"
-					},
-					{
-						name: "headerHeight",
-						type: "Number",
-						default: "34",
-						desc: "标题栏高度（px）。"
-					},
-					{
-						name: "bodyPadding",
-						type: "String",
-						default: "'10px 12px'",
-						desc: "内容区内边距。"
-					},
-					{
-						name: "panelClass / headerClass / bodyClass",
-						type: "String",
-						default: "''",
-						desc: "自定义类名。"
-					},
-					{
-						name: "panelStyle / headerStyle / bodyStyle",
-						type: "Object | String",
-						default: "null",
-						desc: "自定义样式。"
-					},
-					{
-						name: "theme",
-						type: "String",
-						default: "''",
-						desc: "主题。"
-					},
-					{
-						name: "min",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示最小化按钮（布局区域内 center 区域强制为 false）。"
-					},
-					{
-						name: "max",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示最大化按钮（布局区域内为区域最大化，已最大化时切换为还原按钮）。"
-					},
-					{
-						name: "close",
-						type: "Boolean",
-						default: "false",
-						desc: "是否显示关闭按钮。"
-					},
-					{
-						name: "refresh",
-						type: "Boolean",
-						default: "false",
-						desc: "是否显示刷新按钮。"
-					}
-				],
-				emits: [
-					{
-						name: "min",
-						payload: "{ region, name }",
-						desc: "点击最小化按钮（独立使用时触发；布局区域内改为 hide，区域随之收起）。"
-					},
-					{
-						name: "max",
-						payload: "{ region, name }",
-						desc: "点击最大化按钮（独立使用时触发；布局区域内由布局处理区域最大化）。"
-					},
-					{
-						name: "restore",
-						payload: "{ region, name }",
-						desc: "还原 —— 最大化还原 / 从最小化展开（即 min / max 的反向动作）。"
-					},
-					{
-						name: "close",
-						payload: "{ region, name }",
-						desc: "点击关闭按钮。"
-					},
-					{
-						name: "refresh",
-						payload: "{ region, name }",
-						desc: "点击刷新按钮。"
-					}
-				],
-				methods: [],
-				slots: [
-					{
-						name: "leftTool",
-						scope: "—",
-						desc: "标题左侧工具区（在标题之前）。"
-					},
-					{
-						name: "title",
-						scope: "—",
-						desc: "自定义标题区（替换默认 icon + title + subtitle）。"
-					},
-					{
-						name: "actions",
-						scope: "—",
-						desc: "标题栏工具区（标题与按钮之间，flex:1）。"
-					},
-					{
-						name: "default",
-						scope: "—",
-						desc: "内容区。"
-					},
-					{
-						name: "footer",
-						scope: "—",
-						desc: "底部区（覆盖 footer prop 文本）。"
-					}
-				]
-			},
-			{
-				name: "MyPanelContent",
-				desc: "面板内容渲染器。按优先级 component > url > html > 默认插槽 渲染面板内容，支持参数传递（组件 props / URL query 参数）与组件路径懒加载。可独立使用，也是 MyBorderLayout 区域插槽的默认 fallback。",
-				props: [{
-					name: "item",
-					type: "Object",
-					default: "{}",
-					desc: "面板 item，承载内容来源与参数（见下方「内容来源字段」）。"
-				}],
-				emits: [],
-				methods: [],
-				slots: [{
-					name: "default",
-					scope: "—",
-					desc: "item.component / url / html 均未定义时的回退内容。"
-				}, {
-					name: "内容来源字段（item 内）",
-					scope: "—",
-					desc: "component: 组件对象 / 全局名字符串 / 相对项目根目录路径字符串（如 /src/views/Foo.vue，按 import.meta.glob 懒加载）｜props: 组件 props｜url: iframe 地址｜params: URL query 参数对象（→ ?k=v&...）｜html: HTML 字符串（v-html）。"
-				}]
-			},
-			{
-				name: "MyTabs",
-				desc: "多标签容器。标签栏（top / bottom / left / right）+ 内容区，内容按 MyPanelContent 的优先级渲染（component > url(+params) > html > tab:{name} 具名插槽）。标签默认首次激活才挂载、之后保留状态（lazy:false 立即挂载，reload:true 每次激活重建，refreshAt 变化即重建）；右键菜单内置关闭 / 关闭其它 / 关闭全部 / 刷新（点击别处 / Esc / 滚动 / 鼠标移出范围时关闭）。左右布局下 titleVertical 可让标签文字竖排。受控 / 非受控皆可；位于 MyBorderLayout 区域内时，切换 / 关闭 / 刷新经布局注册表上报（notifyTab），标签数据由所在面板的 tab 配置统一维护。",
-				props: [
-					{
-						name: "items",
-						type: "Array",
-						default: "[]",
-						desc: "标签项数组：[{ name, title, iconCls?, closable?, disabled?, lazy?, reload?, menu?, url(+params) / html / component(+props) }]。"
-					},
-					{
-						name: "active",
-						type: "String",
-						default: "''",
-						desc: "当前标签 name；传了即以它为准（受控），空值由组件内部维护。"
-					},
-					{
-						name: "position",
-						type: "String",
-						default: "'top'",
-						desc: "标签栏位置：top / bottom / left / right。"
-					},
-					{
-						name: "closable",
-						type: "Boolean",
-						default: "false",
-						desc: "是否允许关闭（标签项 closable 可单独覆盖）。"
-					},
-					{
-						name: "hasTool",
-						type: "Boolean",
-						default: "false",
-						desc: "显示标签栏尾部工具栏（tool 插槽）。"
-					},
-					{
-						name: "contextmenu",
-						type: "Boolean",
-						default: "false",
-						desc: "启用标签右键菜单（打开前先激活该标签）。"
-					},
-					{
-						name: "menu",
-						type: "Array",
-						default: "null",
-						desc: "右键菜单项：[{ name, title, iconCls?, disabled?, divided?, handler? }]；缺省用内置项（关闭 / 关闭其它 / 关闭全部 / 刷新），标签项的 menu 可单独覆盖。"
-					},
-					{
-						name: "titleVertical",
-						type: "Boolean",
-						default: "false",
-						desc: "标签文字竖直排列（仅 position 为 left / right 生效）。"
-					},
-					{
-						name: "tabsClass",
-						type: "String",
-						default: "''",
-						desc: "附加类名（自定义标签栏样式）。"
-					},
-					{
-						name: "panelName",
-						type: "String",
-						default: "''",
-						desc: "所属面板 name（位于布局区域内时用于上报切换 / 关闭）。"
-					},
-					{
-						name: "theme",
-						type: "String",
-						default: "''",
-						desc: "主题：空值继承父级。"
-					}
-				],
-				emits: [
-					{
-						name: "update:active",
-						payload: "String",
-						desc: "当前标签变化（v-model:active）。"
-					},
-					{
-						name: "change",
-						payload: "{ name, item }",
-						desc: "切换标签。"
-					},
-					{
-						name: "close",
-						payload: "{ name, item }",
-						desc: "标签被关闭（关闭按钮 / 右键菜单，关闭其它 · 全部时每个被移除的标签发一次）。"
-					},
-					{
-						name: "refresh",
-						payload: "{ name, item }",
-						desc: "标签被刷新（重建内容）。"
-					},
-					{
-						name: "contextmenu",
-						payload: "{ name, item, event }",
-						desc: "标签上右键（contextmenu 关闭时也发，仅作通知）。"
-					},
-					{
-						name: "menu-select",
-						payload: "{ action, name, item }",
-						desc: "右键菜单里的自定义项被点击（内置项不触发）。"
-					}
-				],
-				methods: [
-					{
-						sig: "setActive(name)",
-						ret: "Boolean",
-						desc: "激活标签。"
-					},
-					{
-						sig: "close(name)",
-						ret: "Boolean",
-						desc: "关闭标签。"
-					},
-					{
-						sig: "closeOthers(name) / closeAll()",
-						ret: "Boolean",
-						desc: "关闭其它 / 全部标签。"
-					},
-					{
-						sig: "refresh(name?)",
-						ret: "Boolean",
-						desc: "刷新标签（重建内容），name 缺省取当前标签。"
-					}
-				],
-				slots: [
-					{
-						name: "tab:{name}",
-						scope: "{ item }",
-						desc: "按标签 name 命名的内容插槽，优先于 item 的 component / url / html。"
-					},
-					{
-						name: "tool",
-						scope: "—",
-						desc: "标签栏尾部工具栏内容。"
-					},
-					{
-						name: "menu",
-						scope: "{ items, item, run, close }",
-						desc: "自定义右键菜单（替换内置菜单渲染）。"
-					},
-					{
-						name: "empty",
-						scope: "—",
-						desc: "没有标签（或当前标签不存在）时的兜底内容。"
-					}
-				]
-			},
-			{
-				name: "MySplitter",
-				desc: "分割条。默认只显示居中握把，悬浮展开成按钮组（[收缩][最大化] 或 [最大化][收缩]，east/south 顺序相反）。已最大化时不显示最大化按钮（也不切换为还原图标）。区域完全隐藏后退化为贴边浮动伸缩按钮。",
-				props: [
-					{
-						name: "direction",
-						type: "String",
-						default: "'v-left'",
-						desc: "方向：v-left/v-right/h-top/h-bottom。决定拖拽轴向、按钮排布、图标方向。"
-					},
-					{
-						name: "min",
-						type: "Number",
-						default: "60",
-						desc: "拖拽最小尺寸（px）。"
-					},
-					{
-						name: "max",
-						type: "Number",
-						default: "800",
-						desc: "拖拽最大尺寸（px）。"
-					},
-					{
-						name: "step",
-						type: "Number",
-						default: "1",
-						desc: "拖拽步进（>1 时按步取整）。"
-					},
-					{
-						name: "split",
-						type: "Boolean",
-						default: "true",
-						desc: "是否可拖拽。"
-					},
-					{
-						name: "collapsible",
-						type: "Boolean",
-						default: "false",
-						desc: "是否显示收缩 / 展开按钮。"
-					},
-					{
-						name: "maxBtn",
-						type: "Boolean",
-						default: "false",
-						desc: "是否显示最大化按钮。"
-					},
-					{
-						name: "maxed",
-						type: "Boolean",
-						default: "false",
-						desc: "当前区域是否处于最大化态（true 时隐藏最大化按钮）。"
-					},
-					{
-						name: "collapsed",
-						type: "Boolean",
-						default: "false",
-						desc: "当前区域是否处于收缩态（影响图标方向）。"
-					},
-					{
-						name: "hidden",
-						type: "Boolean",
-						default: "false",
-						desc: "区域完全隐藏，分割条退化为贴边浮动伸缩按钮。"
-					},
-					{
-						name: "dual",
-						type: "Boolean",
-						default: "false",
-						desc: "双向收缩模式（栅格布局用）：分割条两侧各控制一个收缩目标。"
-					},
-					{
-						name: "nextCollapsed",
-						type: "Boolean",
-						default: "false",
-						desc: "dual 模式下另一侧是否已收缩。"
-					},
-					{
-						name: "nextCollapsible",
-						type: "Boolean",
-						default: "false",
-						desc: "dual 模式下另一侧是否显示收缩按钮。"
-					},
-					{
-						name: "hoverReveal",
-						type: "Boolean",
-						default: "true",
-						desc: "是否启用「悬浮才展开按钮组」（false 时按钮常显）。"
-					}
-				],
-				emits: [
-					{
-						name: "dragStart",
-						payload: "{ clientPos, setStartSize }",
-						desc: "拖拽开始；setStartSize 用于父组件回填起始尺寸。"
-					},
-					{
-						name: "dragMove",
-						payload: "size (px)",
-						desc: "拖拽移动（已限制在 min/max 内）。"
-					},
-					{
-						name: "dragEnd",
-						payload: "MouseEvent",
-						desc: "拖拽结束。"
-					},
-					{
-						name: "toggle",
-						payload: "—",
-						desc: "点击收缩 / 展开按钮。"
-					},
-					{
-						name: "toggleNext",
-						payload: "—",
-						desc: "dual 模式下点击另一侧的收缩按钮。"
-					},
-					{
-						name: "max",
-						payload: "—",
-						desc: "点击最大化按钮。"
-					}
-				],
-				methods: [],
-				slots: []
-			},
-			{
-				name: "MyFloatPanel",
-				desc: "悬浮面板。位置参数采用 offset 语义：字符串对齐（auto=居中 / t / r / b / l / lt / lb / rt / rb）、4 边偏移对象、数字顶部偏移。支持标题栏拖拽移动（move）、左下 / 右下角 resize、最大化 / 还原 / 关闭、模态遮罩（shade）。默认挂载到 body，container 可指定容器（拖动范围约束在容器内）。",
-				props: [
-					{
-						name: "title",
-						type: "String",
-						default: "''",
-						desc: "标题。"
-					},
-					{
-						name: "hasTitle",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示标题栏。"
-					},
-					{
-						name: "close",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示关闭按钮。"
-					},
-					{
-						name: "max",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示最大化按钮。"
-					},
-					{
-						name: "min",
-						type: "Boolean",
-						default: "true",
-						desc: "最小化按钮（当前未渲染）。"
-					},
-					{
-						name: "maxed",
-						type: "Boolean",
-						default: "false",
-						desc: "初始即最大化。"
-					},
-					{
-						name: "width / height",
-						type: "Number | String",
-						default: "360 / 280",
-						desc: "面板宽高（px）。"
-					},
-					{
-						name: "offset",
-						type: "String | Object | Number",
-						default: "'auto'",
-						desc: "位置：字符串对齐 auto/t/r/b/l/lt/rt/lb/rb（auto=居中）｜对象 { top, left, right, bottom }（4 边偏移，px 或 \"NN%\"）｜数字（顶部偏移）。"
-					},
-					{
-						name: "fixed",
-						type: "Boolean",
-						default: "true",
-						desc: "是否固定定位：true=fixed 跟随视口；false=absolute 含 scroll 偏移。"
-					},
-					{
-						name: "resize",
-						type: "Boolean",
-						default: "true",
-						desc: "是否可拖拽 resize。"
-					},
-					{
-						name: "minWidth / minHeight",
-						type: "Number",
-						default: "200 / 140",
-						desc: "resize 最小尺寸。"
-					},
-					{
-						name: "maxWidth / maxHeight",
-						type: "Number",
-						default: "2000",
-						desc: "resize 最大尺寸。"
-					},
-					{
-						name: "shade",
-						type: "Boolean | Number",
-						default: "false",
-						desc: "模态遮罩：true=默认遮罩；数字=透明度；false=无遮罩（带遮罩时自动居中）。"
-					},
-					{
-						name: "shadeClose",
-						type: "Boolean",
-						default: "false",
-						desc: "shade 时点击遮罩是否关闭。"
-					},
-					{
-						name: "zIndex",
-						type: "Number",
-						default: "999",
-						desc: "层级。"
-					},
-					{
-						name: "visible",
-						type: "Boolean",
-						default: "true",
-						desc: "是否显示。"
-					},
-					{
-						name: "container",
-						type: "String",
-						default: "'body'",
-						desc: "挂载容器：body 或 CSS 选择器。"
-					},
-					{
-						name: "move",
-						type: "Boolean",
-						default: "true",
-						desc: "是否允许拖拽标题栏移动。"
-					},
-					{
-						name: "theme",
-						type: "String",
-						default: "''",
-						desc: "主题。"
-					}
-				],
-				emits: [
-					{
-						name: "update:visible",
-						payload: "Boolean",
-						desc: "可见性变化（v-model:visible）。"
-					},
-					{
-						name: "close",
-						payload: "—",
-						desc: "关闭。"
-					},
-					{
-						name: "max",
-						payload: "—",
-						desc: "最大化。"
-					},
-					{
-						name: "restore",
-						payload: "—",
-						desc: "还原。"
-					},
-					{
-						name: "move",
-						payload: "{ left, top }",
-						desc: "拖拽移动（相对容器的 left/top）。"
-					},
-					{
-						name: "resize",
-						payload: "{ width, height, left, top }",
-						desc: "拖拽 resize。"
-					}
-				],
-				methods: [],
-				slots: [{
-					name: "title",
-					scope: "—",
-					desc: "自定义标题区。"
-				}, {
-					name: "default",
-					scope: "—",
-					desc: "内容区。"
-				}]
-			},
-			{
-				name: "MyGridLayout",
-				desc: "栅格布局容器。基于 12 分栏比例系统，支持四分屏、左右布局等场景。每个单元格通过 layoutNum（1..12 占比，>12 固定像素）声明尺寸，layoutType=h（先水平后竖直）或 v（先竖直后水平）。行/单元格之间插入 MySplitter 可拖拽、双向收缩。面板最大化默认填满整个布局或页面。",
-				props: [
-					{
-						name: "layoutId",
-						type: "String",
-						default: "''",
-						desc: "布局标识（缺省自动生成）。"
-					},
-					{
-						name: "layoutType",
-						type: "String",
-						default: "'h'",
-						desc: "排列方向：h（先水平后竖直，换行成行）/ v（先竖直后水平，换列成列）。"
-					},
-					{
-						name: "theme",
-						type: "String",
-						default: "''",
-						desc: "主题。"
-					},
-					{
-						name: "maxType",
-						type: "String",
-						default: "'center'",
-						desc: "最大化类型：center / layout（整个布局） / page（整个页面）。"
-					},
-					{
-						name: "items",
-						type: "Array",
-						default: "[]",
-						desc: "单元格集合：[{ name, title, layoutNum, split, collapsible, max, border, ...MyPanel 参数 }]。"
-					},
-					{
-						name: "split",
-						type: "Boolean",
-						default: "false",
-						desc: "分割条是否可拖拽（全局默认，单元格 item 可覆盖）。"
-					},
-					{
-						name: "collapsible",
-						type: "Boolean",
-						default: "false",
-						desc: "分割条是否显示收缩按钮（全局默认）。"
-					},
-					{
-						name: "border",
-						type: "Boolean",
-						default: "true",
-						desc: "单元格边框（全局默认）。"
-					},
-					{
-						name: "min",
-						type: "Boolean",
-						default: "false",
-						desc: "面板最小化按钮（全局默认）。"
-					},
-					{
-						name: "max",
-						type: "Boolean",
-						default: "true",
-						desc: "面板最大化按钮（全局默认）。"
-					},
-					{
-						name: "close",
-						type: "Boolean",
-						default: "false",
-						desc: "面板关闭按钮（全局默认）。"
-					},
-					{
-						name: "animate",
-						type: "Boolean",
-						default: "true",
-						desc: "是否启用过渡动画。"
-					}
-				],
-				emits: [
-					{
-						name: "max",
-						payload: "{ key, name }",
-						desc: "单元格最大化。"
-					},
-					{
-						name: "restore",
-						payload: "{ key }",
-						desc: "还原。"
-					},
-					{
-						name: "split",
-						payload: "{ axis, index|key, size }",
-						desc: "分割条拖拽（axis: line/cell）。"
-					},
-					{
-						name: "close",
-						payload: "{ key }",
-						desc: "单元格关闭 / 最小化触发隐藏。"
-					}
-				],
-				methods: [
-					{
-						sig: "max(key)",
-						ret: "void",
-						desc: "最大化指定单元格（简写）。"
-					},
-					{
-						sig: "restore()",
-						ret: "void",
-						desc: "还原。"
-					},
-					{
-						sig: "maxed(key)",
-						ret: "Boolean",
-						desc: "判断指定单元格是否处于最大化态（简写）。"
-					},
-					{
-						sig: "hide(key) / show(key)",
-						ret: "void",
-						desc: "隐藏 / 显示单元格。"
-					},
-					{
-						sig: "toggleLine(lineIdx) / toggleCell(cell)",
-						ret: "void",
-						desc: "切换整行 / 整列 / 单元格隐藏。"
-					},
-					{
-						sig: "notifyPanel(action, region)",
-						ret: "Boolean",
-						desc: "面板事件委托入口（action: min / max / restore / close；min 即 hide）。"
-					}
-				],
-				slots: [{
-					name: "{cell._key}",
-					scope: "{ cell }",
-					desc: "按单元格 key（默认 name）命名的具名插槽。"
-				}]
-			},
-			{
-				name: "Composables（组合式函数）",
-				desc: "主题、布局注册表、面板参数归一化等工具。",
-				props: [],
-				emits: [],
-				methods: [
-					{
-						sig: "import { normalizeTheme, themeClass, useThemeContext, THEMES, DEFAULT_THEME } from '.../composables/theme.js'",
-						ret: "—",
-						desc: "主题工具：normalizeTheme(str) 归一化；themeClass(theme) 返回类名；useThemeContext(props) 解析自身与父级主题。"
-					},
-					{
-						sig: "import { ROOT_LAYOUT_ID, genLayoutId, makeChildLayoutId, registerLayout, unregisterLayout, getLayout, hasLayout, listLayoutIds } from '.../composables/layoutRegistry.js'",
-						ret: "—",
-						desc: "布局注册表：用于嵌套布局 / 面板反查所属布局。makeChildLayoutId(parent, region, name) 生成子布局 id。"
-					},
-					{
-						sig: "import { normalizePanelItem, toPanelProps, normalizeMaxType, REGION_DEFAULTS, PANEL_DEFAULTS, REGION_SHOW_DEFAULTS, REGION_SIZE_DEFAULTS } from '.../composables/panelItem.js'",
-						ret: "—",
-						desc: "面板 / 区域 item 参数工具：归一化与挑选可 v-bind 的面板参数。"
-					}
-				],
-				slots: []
-			}
-		], p = b(f[0].name), h = n(() => f.find((e) => e.name === p.value));
-		function g(e) {
-			p.value = e;
+		let l = s, u = c, d = n(() => we(l.theme)), f = b(Bt[0].name), p = n(() => Bt.find((e) => e.name === f.value));
+		function h(e) {
+			f.value = e;
 		}
-		function v() {
+		function g() {
 			u("update:visible", !1), u("close");
 		}
-		function y(e) {
-			e.key === "Escape" && l.visible && v();
+		function v(e) {
+			e.key === "Escape" && l.visible && g();
 		}
-		return te(() => document.addEventListener("keydown", y)), ee(() => document.removeEventListener("keydown", y)), (n, c) => (_(), r(t, { to: "body" }, [s.visible ? (_(), a("div", {
+		return te(() => document.addEventListener("keydown", v)), ee(() => document.removeEventListener("keydown", v)), (n, c) => (_(), r(t, { to: "body" }, [s.visible ? (_(), a("div", {
 			key: 0,
 			class: m(["my-api-doc", d.value])
 		}, [o("div", {
 			class: "my-api-doc__mask",
-			onClick: v
-		}), o("div", Bt, [o("header", { class: "my-api-doc__header" }, [c[0] ||= o("div", { class: "my-api-doc__title" }, [o("span", { class: "my-api-doc__logo" }, "📚"), o("span", null, "my-layout · API 文档")], -1), o("button", {
+			onClick: g
+		}), o("div", Vt, [o("header", { class: "my-api-doc__header" }, [c[0] ||= o("div", { class: "my-api-doc__title" }, [o("span", { class: "my-api-doc__logo" }, "📚"), o("span", null, "my-layout · API 文档")], -1), o("button", {
 			class: "my-api-doc__close",
 			title: "关闭 (Esc)",
-			onClick: v
-		}, "✕")]), o("div", Vt, [o("aside", Ht, [c[1] ||= o("div", { class: "my-api-doc__nav-title" }, "组件 / 模块", -1), (_(), a(e, null, x(f, (e) => o("a", {
+			onClick: g
+		}, "✕")]), o("div", Ht, [o("aside", Ut, [c[1] ||= o("div", { class: "my-api-doc__nav-title" }, "组件 / 模块", -1), (_(!0), a(e, null, x(T(Bt), (e) => (_(), a("a", {
 			key: e.name,
-			class: m(["my-api-doc__nav-item", { active: p.value === e.name }]),
-			onClick: (t) => g(e.name)
-		}, w(e.name), 11, Ut)), 64))]), h.value ? (_(), a("main", Wt, [
-			o("h2", Gt, w(h.value.name), 1),
-			o("p", Kt, w(h.value.desc), 1),
-			h.value.props?.length ? (_(), a("section", qt, [c[3] ||= o("h3", { class: "my-api-doc__section-title" }, "Props（属性）", -1), o("table", Jt, [c[2] ||= o("thead", null, [o("tr", null, [
+			class: m(["my-api-doc__nav-item", { active: f.value === e.name }]),
+			onClick: (t) => h(e.name)
+		}, w(e.name), 11, Wt))), 128))]), p.value ? (_(), a("main", Gt, [
+			o("h2", Kt, w(p.value.name), 1),
+			o("p", qt, w(p.value.desc), 1),
+			p.value.props?.length ? (_(), a("section", Jt, [c[3] ||= o("h3", { class: "my-api-doc__section-title" }, "Props（属性）", -1), o("table", Yt, [c[2] ||= o("thead", null, [o("tr", null, [
 				o("th", { class: "c-name" }, "名称"),
 				o("th", { class: "c-type" }, "类型"),
 				o("th", { class: "c-default" }, "默认"),
 				o("th", null, "说明")
-			])], -1), o("tbody", null, [(_(!0), a(e, null, x(h.value.props, (e) => (_(), a("tr", { key: e.name }, [
-				o("td", Yt, [o("code", null, w(e.name), 1)]),
-				o("td", Xt, w(e.type), 1),
-				o("td", Zt, [o("code", null, w(e.default), 1)]),
+			])], -1), o("tbody", null, [(_(!0), a(e, null, x(p.value.props, (e) => (_(), a("tr", { key: e.name }, [
+				o("td", Xt, [o("code", null, w(e.name), 1)]),
+				o("td", Zt, w(e.type), 1),
+				o("td", Qt, [o("code", null, w(e.default), 1)]),
 				o("td", null, w(e.desc), 1)
 			]))), 128))])])])) : i("", !0),
-			h.value.emits?.length ? (_(), a("section", Qt, [c[5] ||= o("h3", { class: "my-api-doc__section-title" }, "Emits（事件）", -1), o("table", $t, [c[4] ||= o("thead", null, [o("tr", null, [
+			p.value.emits?.length ? (_(), a("section", $t, [c[5] ||= o("h3", { class: "my-api-doc__section-title" }, "Emits（事件）", -1), o("table", en, [c[4] ||= o("thead", null, [o("tr", null, [
 				o("th", { class: "c-name" }, "名称"),
 				o("th", { class: "c-payload" }, "载荷"),
 				o("th", null, "说明")
-			])], -1), o("tbody", null, [(_(!0), a(e, null, x(h.value.emits, (e) => (_(), a("tr", { key: e.name }, [
-				o("td", en, [o("code", null, w(e.name), 1)]),
-				o("td", tn, w(e.payload), 1),
+			])], -1), o("tbody", null, [(_(!0), a(e, null, x(p.value.emits, (e) => (_(), a("tr", { key: e.name }, [
+				o("td", tn, [o("code", null, w(e.name), 1)]),
+				o("td", nn, w(e.payload), 1),
 				o("td", null, w(e.desc), 1)
 			]))), 128))])])])) : i("", !0),
-			h.value.methods?.length ? (_(), a("section", nn, [c[7] ||= o("h3", { class: "my-api-doc__section-title" }, "Methods（defineExpose 暴露方法，通过 ref 调用）", -1), o("table", rn, [c[6] ||= o("thead", null, [o("tr", null, [
+			p.value.methods?.length ? (_(), a("section", rn, [c[7] ||= o("h3", { class: "my-api-doc__section-title" }, "Methods（defineExpose 暴露方法，通过 ref 调用）", -1), o("table", an, [c[6] ||= o("thead", null, [o("tr", null, [
 				o("th", { class: "c-sig" }, "签名"),
 				o("th", { class: "c-ret" }, "返回"),
 				o("th", null, "说明")
-			])], -1), o("tbody", null, [(_(!0), a(e, null, x(h.value.methods, (e, t) => (_(), a("tr", { key: t }, [
-				o("td", an, [o("code", null, w(e.sig), 1)]),
-				o("td", on, w(e.ret), 1),
+			])], -1), o("tbody", null, [(_(!0), a(e, null, x(p.value.methods, (e, t) => (_(), a("tr", { key: t }, [
+				o("td", on, [o("code", null, w(e.sig), 1)]),
+				o("td", sn, w(e.ret), 1),
 				o("td", null, w(e.desc), 1)
 			]))), 128))])])])) : i("", !0),
-			h.value.slots?.length ? (_(), a("section", sn, [c[9] ||= o("h3", { class: "my-api-doc__section-title" }, "Slots（插槽）", -1), o("table", cn, [c[8] ||= o("thead", null, [o("tr", null, [
+			p.value.slots?.length ? (_(), a("section", cn, [c[9] ||= o("h3", { class: "my-api-doc__section-title" }, "Slots（插槽）", -1), o("table", ln, [c[8] ||= o("thead", null, [o("tr", null, [
 				o("th", { class: "c-name" }, "名称"),
 				o("th", { class: "c-scope" }, "作用域"),
 				o("th", null, "说明")
-			])], -1), o("tbody", null, [(_(!0), a(e, null, x(h.value.slots, (e) => (_(), a("tr", { key: e.name }, [
-				o("td", ln, [o("code", null, w(e.name), 1)]),
-				o("td", un, w(e.scope), 1),
+			])], -1), o("tbody", null, [(_(!0), a(e, null, x(p.value.slots, (e) => (_(), a("tr", { key: e.name }, [
+				o("td", un, [o("code", null, w(e.name), 1)]),
+				o("td", dn, w(e.scope), 1),
 				o("td", null, w(e.desc), 1)
 			]))), 128))])])])) : i("", !0)
 		])) : i("", !0)])])], 2)) : i("", !0)]));
 	}
-}, [["__scopeId", "data-v-a2b655af"]]), fn = {
+}, [["__scopeId", "data-v-6954c86f"]]), pn = {
 	MyBorderLayout: Et,
 	MyGridLayout: Mt,
 	MyMainFrame: Nt,
@@ -4627,14 +4627,14 @@ var yt = [
 	MyPanelContent: et,
 	MyTabs: ut,
 	MyFloatPanel: zt,
-	MyApiDoc: dn
+	MyApiDoc: fn
 };
-function pn(e) {
-	for (let t in fn) e.component(t, fn[t]);
+function mn(e) {
+	for (let t in pn) e.component(t, pn[t]);
 }
-var mn = {
-	install: pn,
-	...fn
+var hn = {
+	install: mn,
+	...pn
 };
 //#endregion
-export { Y as DEFAULT_PANEL_NAME, be as DEFAULT_THEME, dn as MyApiDoc, Et as MyBorderLayout, zt as MyFloatPanel, Mt as MyGridLayout, Nt as MyMainFrame, Je as MyPanel, et as MyPanelContent, de as MySplitter, ut as MyTabs, fe as ROOT_LAYOUT_ID, xe as THEMES, mn as default, Z as genLayoutId, ge as getLayout, _e as hasLayout, Ze as isComponentPath, ve as listLayoutIds, pe as makeChildLayoutId, Ce as normalizeTheme, me as registerLayout, Xe as resolvePathComponent, we as themeClass, he as unregisterLayout, Te as useThemeContext };
+export { Y as DEFAULT_PANEL_NAME, be as DEFAULT_THEME, fn as MyApiDoc, Et as MyBorderLayout, zt as MyFloatPanel, Mt as MyGridLayout, Nt as MyMainFrame, Je as MyPanel, et as MyPanelContent, de as MySplitter, ut as MyTabs, fe as ROOT_LAYOUT_ID, xe as THEMES, hn as default, Z as genLayoutId, ge as getLayout, _e as hasLayout, Ze as isComponentPath, ve as listLayoutIds, pe as makeChildLayoutId, Ce as normalizeTheme, me as registerLayout, Xe as resolvePathComponent, we as themeClass, he as unregisterLayout, Te as useThemeContext };
