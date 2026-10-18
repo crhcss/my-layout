@@ -382,7 +382,7 @@ var M = (e, t) => {
 			}, [(_(), a("svg", be, [o("path", { d: Me.value }, null, 8, xe)]))], 40, ye)) : i("", !0)
 		], 64))], 2)], 34)) : i("", !0)], 34));
 	}
-}, [["__scopeId", "data-v-c1263c5d"]]), Te = /* @__PURE__ */ new Map(), Ee = "BorderLayout", De = "defaultname", Oe = 0;
+}, [["__scopeId", "data-v-c48e2814"]]), Te = /* @__PURE__ */ new Map(), Ee = "BorderLayout", De = "defaultname", Oe = 0;
 function ke(e = "layout") {
 	return `${e}_${++Oe}`;
 }
@@ -787,7 +787,7 @@ var Ue = {
 			e.hasFooter ? (_(), a("div", ct, [S(t.$slots, "footer", {}, () => [c(w(e.footer), 1)], !0)])) : i("", !0)
 		], 6));
 	}
-}, [["__scopeId", "data-v-22c70773"]]), ut = null;
+}, [["__scopeId", "data-v-6b32997b"]]), ut = null;
 function dt(e) {
 	return typeof ut == "function" ? ut(e) : null;
 }
@@ -1128,7 +1128,7 @@ var pt = ["src"], mt = ["innerHTML"], ht = /*#__PURE__*/ M({
 			}, [e.iconCls ? (_(), a("span", Tt, w(e.iconCls), 1)) : i("", !0), o("span", null, w(e.title || e.name), 1)], 10, wt))), 128))], 36)], !0, 0) : i("", !0)
 		], 10, gt));
 	}
-}, [["__scopeId", "data-v-806e6b31"]]), Ot = /* @__PURE__ */ "title.iconCls.hasTitle.hasSubTitle.subTitle.hasTool.hasFooter.footer.border.scroll.noscroll.opacity.headerHeight.bodyPadding.panelClass.headerClass.bodyClass.panelStyle.headerStyle.bodyStyle.theme.min.max.close.refresh.nav".split("."), kt = Object.freeze({
+}, [["__scopeId", "data-v-74605ae0"]]), Ot = /* @__PURE__ */ "title.iconCls.hasTitle.hasSubTitle.subTitle.hasTool.hasFooter.footer.border.scroll.noscroll.opacity.headerHeight.bodyPadding.panelClass.headerClass.bodyClass.panelStyle.headerStyle.bodyStyle.theme.min.max.close.refresh.nav".split("."), kt = Object.freeze({
 	north: !0,
 	south: !0,
 	west: !0,
@@ -1269,6 +1269,10 @@ var It = [
 		maxType: {
 			type: String,
 			default: "center"
+		},
+		splitterVariant: {
+			type: String,
+			default: ""
 		},
 		animate: {
 			type: Boolean,
@@ -2057,6 +2061,7 @@ var It = [
 				key: 1,
 				class: "my-bl__split-north",
 				direction: "h-top",
+				variant: t.splitterVariant,
 				min: 24,
 				max: 200,
 				split: ae("north"),
@@ -2071,6 +2076,7 @@ var It = [
 				onToggle: c[2] ||= (e) => et("north"),
 				onMax: c[3] ||= (e) => rt("north")
 			}, null, 8, [
+				"variant",
 				"split",
 				"collapsible",
 				"max-btn",
@@ -2134,6 +2140,7 @@ var It = [
 				key: 3,
 				class: "my-bl__split-west",
 				direction: "v-left",
+				variant: t.splitterVariant,
 				min: T(64),
 				max: 800,
 				split: ae("west"),
@@ -2148,6 +2155,7 @@ var It = [
 				onToggle: c[6] ||= (e) => et("west"),
 				onMax: c[7] ||= (e) => rt("west")
 			}, null, 8, [
+				"variant",
 				"min",
 				"split",
 				"collapsible",
@@ -2201,6 +2209,7 @@ var It = [
 				key: 4,
 				class: "my-bl__split-east",
 				direction: "v-right",
+				variant: t.splitterVariant,
 				min: 60,
 				max: 800,
 				split: ae("east"),
@@ -2215,6 +2224,7 @@ var It = [
 				onToggle: c[10] ||= (e) => et("east"),
 				onMax: c[11] ||= (e) => rt("east")
 			}, null, 8, [
+				"variant",
 				"split",
 				"collapsible",
 				"max-btn",
@@ -2278,6 +2288,7 @@ var It = [
 				key: 6,
 				class: "my-bl__split-south",
 				direction: "h-bottom",
+				variant: t.splitterVariant,
 				min: 16,
 				max: 120,
 				split: ae("south"),
@@ -2292,6 +2303,7 @@ var It = [
 				onToggle: c[14] ||= (e) => et("south"),
 				onMax: c[15] ||= (e) => rt("south")
 			}, null, 8, [
+				"variant",
 				"split",
 				"collapsible",
 				"max-btn",
@@ -2358,7 +2370,7 @@ var It = [
 			}, null, 512)
 		], 10, It));
 	}
-}, [["__scopeId", "data-v-ac46109e"]]), Wt = ["data-layout-id"], Gt = ["data-region"], Kt = 12, qt = 24, Jt = 4e3, Yt = /*#__PURE__*/ M({
+}, [["__scopeId", "data-v-ec9c7d31"]]), Wt = ["data-layout-id"], Gt = ["data-region"], Kt = 12, qt = 24, Jt = 4e3, Yt = /*#__PURE__*/ M({
 	__name: "MyGridLayout",
 	props: {
 		layoutId: {
@@ -2706,7 +2718,7 @@ var It = [
 			_: 2
 		}, 1040)], 12, Gt)) : i("", !0)], 64))), 128))], 6)) : i("", !0)], 64))), 128))], 10, Wt));
 	}
-}, [["__scopeId", "data-v-27221319"]]), Xt = {
+}, [["__scopeId", "data-v-70df8665"]]), Xt = {
 	__name: "MyMainFrame",
 	props: {
 		frameType: {
@@ -2729,6 +2741,10 @@ var It = [
 		maxType: {
 			type: String,
 			default: "center"
+		},
+		splitterVariant: {
+			type: String,
+			default: ""
 		},
 		animate: {
 			type: Boolean,
@@ -2891,6 +2907,7 @@ var It = [
 			"parent-layout-id": e.parentLayoutId,
 			"region-level": e.regionLevel,
 			"max-type": e.maxType,
+			"splitter-variant": e.splitterVariant,
 			animate: e.animate,
 			"animation-duration": e.animationDuration,
 			regions: s.value,
@@ -2919,6 +2936,7 @@ var It = [
 			"parent-layout-id",
 			"region-level",
 			"max-type",
+			"splitter-variant",
 			"animate",
 			"animation-duration",
 			"regions",
@@ -3322,7 +3340,7 @@ var It = [
 			}, null, 32)], 64)) : i("", !0)
 		], 6)) : i("", !0)], 8, ["to"]));
 	}
-}, [["__scopeId", "data-v-484a9324"]]), rn = [
+}, [["__scopeId", "data-v-87d7aad0"]]), rn = [
 	{
 		name: "MyBorderLayout",
 		desc: "核心 Border 布局容器。五区（north / west / center / east / south）CSS Grid 实现，支持嵌套布局、区域优先级、最大化（center / layout / page）、面板导航、区域悬浮（item.float）与区域面板多标签（item.tab）。",
@@ -3350,6 +3368,12 @@ var It = [
 				type: "String",
 				default: "'center'",
 				desc: "全局默认最大化类型：center(覆盖自身+中间) / layout(整个布局) / page(整个页面+全屏)。优先级：item.maxType > regions[region].maxType > 全局 maxType > \"center\"。"
+			},
+			{
+				name: "splitterVariant",
+				type: "String",
+				default: "''",
+				desc: "四个区域伸缩分割条的视觉模式：modern（对齐 FXYJ 生产版：半透明浅蓝轨道 + 8×80 白色半透明把手）/ classic（旧样式：1px 发丝线 + 悬浮握把按钮组）。默认空 = 跟随全局 provide(\"myLayoutSplitterVariant\")，都未设置时为 modern。"
 			},
 			{
 				name: "animate",
@@ -3693,6 +3717,12 @@ var It = [
 				type: "String",
 				default: "'center'",
 				desc: "透传 MyBorderLayout.maxType（全局最大化类型默认值）。"
+			},
+			{
+				name: "splitterVariant",
+				type: "String",
+				default: "''",
+				desc: "透传 MyBorderLayout.splitterVariant：区域伸缩分割条视觉模式 modern / classic，空 = 跟随全局 provide(\"myLayoutSplitterVariant\")，未设置时为 modern。"
 			},
 			{
 				name: "animate",
