@@ -16,6 +16,7 @@
 | `parentLayoutId` | String | `''` | 父布局 id（子布局自动带出，用于向上追溯）。 |
 | `regionLevel` | String \| Number | `'ns'` | 区域优先级：ns(上下左右) / ew(左右上下) / nws(上左下右) / nwe(上左右下)，也接受 1/2/3/4 与全称。 |
 | `maxType` | String | `'center'` | 全局默认最大化类型：center(覆盖自身+中间) / layout(整个布局) / page(整个页面+全屏)。优先级：item.maxType > regions[region].maxType > 全局 maxType > "center"。 |
+| `splitterVariant` | String | `''` | 四个区域伸缩分割条的视觉模式：modern（对齐 FXYJ 生产版：半透明浅蓝轨道 + 8×80 白色半透明把手）/ classic（旧样式：1px 发丝线 + 悬浮握把按钮组）。默认空 = 跟随全局 provide("myLayoutSplitterVariant")，都未设置时为 modern。 |
 | `animate` | Boolean | `true` | 是否启用尺寸 / 最大化过渡动画。 |
 | `animationDuration` | Number | `260` | 动画时长（毫秒）。 |
 | `regions` | Object | `{}` | 区域配置：{ north:{active,panels,show}, west:{...}, center:{...}, east:{...}, south:{...} }。每个 panel item 参数集 ≈ MyPanel，另加布局参数 float（区域悬浮在中间区域之上）/ tab（{ items, active, position, closable, hasTool, contextmenu, menu, titleVertical } 多标签）。 |
@@ -104,6 +105,7 @@
 | `parentLayoutId` | String | `''` | 透传 MyBorderLayout.parentLayoutId。 |
 | `regionLevel` | String \| Number | `'ns'` | 透传 MyBorderLayout.regionLevel。 |
 | `maxType` | String | `'center'` | 透传 MyBorderLayout.maxType（全局最大化类型默认值）。 |
+| `splitterVariant` | String | `''` | 透传 MyBorderLayout.splitterVariant：区域伸缩分割条视觉模式 modern / classic，空 = 跟随全局 provide("myLayoutSplitterVariant")，未设置时为 modern。 |
 | `animate` | Boolean | `true` | 透传 MyBorderLayout.animate。 |
 | `animationDuration` | Number | `260` | 透传 MyBorderLayout.animationDuration。 |
 | `regions` | Object | `{}` | 透传 MyBorderLayout.regions。 |
