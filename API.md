@@ -1,6 +1,6 @@
 # @crhcss/my-layout API 文档
 
-> 版本 v1.1.0 · 生成自 src/mylayout/composables/apiDocs.js（npm run build:docs）
+> 版本 v1.2.0 · 生成自 src/mylayout/composables/apiDocs.js（npm run build:docs）
 
 **组件索引**：[MyBorderLayout](#myborderlayout) · [MyMainFrame](#mymainframe) · [MyPanel](#mypanel) · [MyPanelContent](#mypanelcontent) · [MyTabs](#mytabs) · [MySplitter](#mysplitter) · [MyFloatPanel](#myfloatpanel) · [MyGridLayout](#mygridlayout) · [Composables（组合式函数）](#composables-组合式函数-)
 
@@ -20,6 +20,7 @@
 | `animationDuration` | Number | `260` | 动画时长（毫秒）。 |
 | `regions` | Object | `{}` | 区域配置：{ north:{active,panels,show}, west:{...}, center:{...}, east:{...}, south:{...} }。每个 panel item 参数集 ≈ MyPanel，另加布局参数 float（区域悬浮在中间区域之上）/ tab（{ items, active, position, closable, hasTool, contextmenu, menu, titleVertical } 多标签）。 |
 | `autoPanel` | Boolean | `false` | true 时区域自动包一层 MyPanel，插槽内容作为面板 body。 |
+| `border` | Boolean | `true` | 是否画区域边框（全局默认开关；region item 的 border 可单独覆盖，同时作为该区域面板 border 的默认值）。 |
 | `theme` | String | `''` | 主题：空值继承父级；light / light-blue / dark。 |
 
 ### Emits（事件）
@@ -265,13 +266,14 @@
 
 ## MySplitter
 
-分割条。默认只显示居中握把，悬浮展开成按钮组（[收缩][最大化] 或 [最大化][收缩]，east/south 顺序相反）。已最大化时不显示最大化按钮（也不切换为还原图标）。区域完全隐藏后退化为贴边浮动伸缩按钮。
+分割条。两套视觉由 variant 切换：modern（默认，对齐 FXYJ 生产版 SSRegionExpOrCollBtn / WarningPanel 视觉）= 半透明浅蓝轨道 + 居中常显 8×80 白色半透明圆角把手（内含实心三角按钮，主按钮常显、其余悬浮展开，悬浮把手转主蓝 #03a9f4c2 + 白图标）；classic = 1px 发丝线 + 悬浮握把 / 按钮组（旧样式）。区域完全隐藏后退化为贴边浮动伸缩按钮 —— 把手完整保留：贴收缩侧边缘、另一轴居中。按钮顺序 [收缩][最大化] 或 [最大化][收缩]（east/south 相反）。已最大化时不显示最大化按钮（也不切换为还原图标）。把手整块可点击：可见按钮只有一个时，点击把手任意位置即触发该按钮；两个及以上需点击按钮本身（此时把手非按钮区光标为 default，且仍可从把手处按住拖拽）。modern 配色可用变量覆盖：--my-layout-splitter-track / -track-hover（轨道）、-thumb / -thumb-hover（把手）、-icon（图标）。
 
 ### Props（属性）
 
 | 名称 | 类型 | 默认 | 说明 |
 | --- | --- | --- | --- |
 | `direction` | String | `'v-left'` | 方向：v-left/v-right/h-top/h-bottom。决定拖拽轴向、按钮排布、图标方向。 |
+| `variant` | String | `'modern'` | 视觉样式：modern（对齐 FXYJ 生产版）/ classic（改动前旧样式）。传 null 时跟随全局 provide("myLayoutSplitterVariant")，无人提供则退回 modern。 |
 | `min` | Number | `60` | 拖拽最小尺寸（px）。 |
 | `max` | Number | `800` | 拖拽最大尺寸（px）。 |
 | `step` | Number | `1` | 拖拽步进（>1 时按步取整）。 |
@@ -280,7 +282,7 @@
 | `maxBtn` | Boolean | `false` | 是否显示最大化按钮。 |
 | `maxed` | Boolean | `false` | 当前区域是否处于最大化态（true 时隐藏最大化按钮）。 |
 | `collapsed` | Boolean | `false` | 当前区域是否处于收缩态（影响图标方向）。 |
-| `hidden` | Boolean | `false` | 区域完全隐藏，分割条退化为贴边浮动伸缩按钮。 |
+| `hidden` | Boolean | `false` | 区域完全隐藏，分割条退化为贴边浮动伸缩按钮（把手完整可见：贴收缩侧边缘、另一轴居中）。 |
 | `dual` | Boolean | `false` | 双向收缩模式（栅格布局用）：分割条两侧各控制一个收缩目标。 |
 | `nextCollapsed` | Boolean | `false` | dual 模式下另一侧是否已收缩。 |
 | `nextCollapsible` | Boolean | `false` | dual 模式下另一侧是否显示收缩按钮。 |
@@ -307,6 +309,7 @@
 | --- | --- | --- | --- |
 | `title` | String | `''` | 标题。 |
 | `hasTitle` | Boolean | `true` | 是否显示标题栏。 |
+| `border` | Boolean | `true` | 是否显示外边框。 |
 | `close` | Boolean | `true` | 是否显示关闭按钮。 |
 | `max` | Boolean | `true` | 是否显示最大化按钮。 |
 | `min` | Boolean | `true` | 最小化按钮（当前未渲染）。 |
