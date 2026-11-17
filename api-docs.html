@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@crhcss/my-layout · API 文档 v1.2.0</title>
+<title>@crhcss/my-layout · API 文档 v2.0.0</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; color: #303133; background: #fff; display: flex; min-height: 100vh; }
@@ -31,7 +31,7 @@ code { display: inline-block; padding: 1px 6px; background: #f0f2f5; color: #c72
 </head>
 <body id="top">
 <aside>
-  <div class="brand">@crhcss/my-layout<small>API 文档 v1.2.0</small></div>
+  <div class="brand">@crhcss/my-layout<small>API 文档 v2.0.0</small></div>
   <div class="nav-title">组件 / 模块</div>
   <a class="nav-item" href="#myborderlayout">MyBorderLayout</a>
 <a class="nav-item" href="#mymainframe">MyMainFrame</a>
@@ -41,6 +41,12 @@ code { display: inline-block; padding: 1px 6px; background: #f0f2f5; color: #c72
 <a class="nav-item" href="#mysplitter">MySplitter</a>
 <a class="nav-item" href="#myfloatpanel">MyFloatPanel</a>
 <a class="nav-item" href="#mygridlayout">MyGridLayout</a>
+<a class="nav-item" href="#mygridlist">MyGridList</a>
+<a class="nav-item" href="#mypagerbar">MyPagerBar</a>
+<a class="nav-item" href="#mygridfilterbar">MyGridFilterBar</a>
+<a class="nav-item" href="#mygridfilterdrawer">MyGridFilterDrawer</a>
+<a class="nav-item" href="#myphotoviewer">MyPhotoViewer</a>
+<a class="nav-item" href="#mypanoramaviewer">MyPanoramaViewer</a>
 <a class="nav-item" href="#composables-组合式函数-">Composables（组合式函数）</a>
 </aside>
 <div class="wrap">
@@ -200,7 +206,7 @@ code { display: inline-block; padding: 1px 6px; background: #f0f2f5; color: #c72
     <section>
       <h3>Props（属性）</h3>
       <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
-      <tbody><tr><td><code>title</code></td><td class="dim">String</td><td><code>''</code></td><td>标题。</td></tr><tr><td><code>hasTitle</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示标题栏。</td></tr><tr><td><code>border</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示外边框。</td></tr><tr><td><code>close</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示关闭按钮。</td></tr><tr><td><code>max</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示最大化按钮。</td></tr><tr><td><code>min</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>最小化按钮（当前未渲染）。</td></tr><tr><td><code>maxed</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>初始即最大化。</td></tr><tr><td><code>width / height</code></td><td class="dim">Number | String</td><td><code>360 / 280</code></td><td>面板宽高（px）。</td></tr><tr><td><code>offset</code></td><td class="dim">String | Object | Number</td><td><code>'auto'</code></td><td>位置：字符串对齐 auto/t/r/b/l/lt/rt/lb/rb（auto=居中）｜对象 { top, left, right, bottom }（4 边偏移，px 或 &quot;NN%&quot;）｜数字（顶部偏移）。</td></tr><tr><td><code>fixed</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否固定定位：true=fixed 跟随视口；false=absolute 含 scroll 偏移。</td></tr><tr><td><code>resize</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否可拖拽 resize。</td></tr><tr><td><code>minWidth / minHeight</code></td><td class="dim">Number</td><td><code>200 / 140</code></td><td>resize 最小尺寸。</td></tr><tr><td><code>maxWidth / maxHeight</code></td><td class="dim">Number</td><td><code>2000</code></td><td>resize 最大尺寸。</td></tr><tr><td><code>shade</code></td><td class="dim">Boolean | Number</td><td><code>false</code></td><td>模态遮罩：true=默认遮罩；数字=透明度；false=无遮罩（带遮罩时自动居中）。</td></tr><tr><td><code>shadeClose</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>shade 时点击遮罩是否关闭。</td></tr><tr><td><code>zIndex</code></td><td class="dim">Number</td><td><code>999</code></td><td>层级。</td></tr><tr><td><code>visible</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示。</td></tr><tr><td><code>container</code></td><td class="dim">String</td><td><code>'body'</code></td><td>挂载容器：body 或 CSS 选择器。</td></tr><tr><td><code>move</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否允许拖拽标题栏移动。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题。</td></tr></tbody></table>
+      <tbody><tr><td><code>title</code></td><td class="dim">String</td><td><code>''</code></td><td>标题。</td></tr><tr><td><code>hasTitle</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示标题栏。</td></tr><tr><td><code>padding</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>内容区 16px 内边距；内容自带布局（如内嵌 MyPhotoViewer）时关掉。</td></tr><tr><td><code>border</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示外边框。</td></tr><tr><td><code>close</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示关闭按钮。</td></tr><tr><td><code>max</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示最大化按钮。</td></tr><tr><td><code>min</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>最小化按钮（当前未渲染）。</td></tr><tr><td><code>maxed</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>初始即最大化。</td></tr><tr><td><code>width / height</code></td><td class="dim">Number | String</td><td><code>360 / 280</code></td><td>面板宽高（px）。</td></tr><tr><td><code>offset</code></td><td class="dim">String | Object | Number</td><td><code>'auto'</code></td><td>位置：字符串对齐 auto/t/r/b/l/lt/rt/lb/rb（auto=居中）｜对象 { top, left, right, bottom }（4 边偏移，px 或 &quot;NN%&quot;）｜数字（顶部偏移）。</td></tr><tr><td><code>fixed</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否固定定位：true=fixed 跟随视口；false=absolute 含 scroll 偏移。</td></tr><tr><td><code>resize</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否可拖拽 resize。</td></tr><tr><td><code>minWidth / minHeight</code></td><td class="dim">Number</td><td><code>200 / 140</code></td><td>resize 最小尺寸。</td></tr><tr><td><code>maxWidth / maxHeight</code></td><td class="dim">Number</td><td><code>2000</code></td><td>resize 最大尺寸。</td></tr><tr><td><code>shade</code></td><td class="dim">Boolean | Number</td><td><code>false</code></td><td>模态遮罩：true=默认遮罩；数字=透明度；false=无遮罩（带遮罩时自动居中）。</td></tr><tr><td><code>shadeClose</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>shade 时点击遮罩是否关闭。</td></tr><tr><td><code>zIndex</code></td><td class="dim">Number</td><td><code>999</code></td><td>层级。</td></tr><tr><td><code>visible</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否显示。</td></tr><tr><td><code>container</code></td><td class="dim">String</td><td><code>'body'</code></td><td>挂载容器：body 或 CSS 选择器。</td></tr><tr><td><code>move</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否允许拖拽标题栏移动。</td></tr><tr><td><code>theme</code></td><td class="dim">String</td><td><code>''</code></td><td>主题。</td></tr></tbody></table>
     </section>
     
     <section>
@@ -246,16 +252,145 @@ code { display: inline-block; padding: 1px 6px; background: #f0f2f5; color: #c72
     </section>
   </main>
 
+  <main class="doc" id="mygridlist">
+    <h2>MyGridList</h2>
+    <p class="desc">grid 数据列表：多级表头（children 分组列）/ 后端分页 / 列锁定（fixed left/right）/ 复选列 / 序号列 / 斑马纹 / 表头列分隔 / 操作列前置，列拖拽排序 / 列宽拖拽 / 表头三态排序 / 加载遮罩 / 空态。表头 / 表体分离滚动：纵向滚动条只在表体，表头区不出现滚动条。列定义 columns 是表头、colgroup 与排序的唯一来源；单元格默认按 row[col.key] 渲染文本，特殊列（操作列、徽章列等）用 cell:{key} 插槽自定义。配色全部走 --my-layout-* 主题变量。配套 useGridFilter + MyGridFilterBar / MyGridFilterDrawer 做筛选。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>columns</code></td><td class="dim">Array</td><td><code>—</code></td><td>列定义 [{ key, label, width, num?, sortable?, hint?, minWidth?, children?, fixed? }]，必传。num=数字列（右对齐 + 等宽数字）；sortable=表头可点排序；hint=表头悬浮提示。children 非空 = 分组列（两级表头），取值 / 排序 / 列宽都落在叶子列上，分组模式自动禁列拖序。fixed=列锁定（left / right，贴边固定 + 分隔投影，不参与拖序；复选 / 序号列始终锁定最左）。顺序即列顺序（操作列放首位即前置）。</td></tr><tr><td><code>rows</code></td><td class="dim">Array</td><td><code>[]</code></td><td>本地分页：全量数据（分页只切显示，排序在分页之前做）；server 模式：当前页数据。</td></tr><tr><td><code>rowKey</code></td><td class="dim">String | Function</td><td><code>'id'</code></td><td>行键：字段名或 (row) =&gt; key，用于行选中与去重。</td></tr><tr><td><code>selectedKey</code></td><td class="dim">String | Number</td><td><code>null</code></td><td>行选中高亮的 key（与 rowKey 取值比较，选中行左侧亮蓝竖条）。</td></tr><tr><td><code>rowClass</code></td><td class="dim">Function</td><td><code>null</code></td><td>行附加 class：(row, index) =&gt; string | object。</td></tr><tr><td><code>sortValue</code></td><td class="dim">Function</td><td><code>null</code></td><td>排序取值 (row, key) =&gt; number | string；缺省按 row[key]，数字按数值比，缺值恒排末尾。</td></tr><tr><td><code>loading</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>加载中：显示遮罩并禁用分页。</td></tr><tr><td><code>emptyText</code></td><td class="dim">String</td><td><code>''</code></td><td>空态文案（empty 插槽优先）。</td></tr><tr><td><code>pager</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>是否内置分页条（MyPagerBar）。</td></tr><tr><td><code>pageSize</code></td><td class="dim">Number</td><td><code>10</code></td><td>每页条数。</td></tr><tr><td><code>pageSizes</code></td><td class="dim">Array</td><td><code>[5,10,20,50,100]</code></td><td>可选每页条数。</td></tr><tr><td><code>selection</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>复选列开关（默认开启，首列）：自绘 checkbox（随主题，全选白勾 / 半选横线），表头全选只作用于当前页，半选态自动显示；勾选跨页 / 翻页 / 排序保留，勾选行淡主色底且分隔线融入底色。</td></tr><tr><td><code>index</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>序号列开关（默认开启，复选列之后）：显示全局序号（翻页 / 排序 / 后端分页后连续），表头为「序号」。</td></tr><tr><td><code>sortable</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>全局排序开关（默认开启；列级 sortable 仍需为 true 才可排序）。可排序列表头常显上下双箭头，悬浮加深、激活一侧主色高亮。</td></tr><tr><td><code>columnDrag</code></td><td class="dim">Boolean</td><td><code>true</code></td><td>列位置拖动开关（默认开启，按住表头拖动调整列顺序）；多级表头下自动禁用。</td></tr><tr><td><code>server</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>后端分页模式：rows 即当前页数据，翻页 / 排序 / 每页条数只发事件由外部加载，本地不切片不排序。</td></tr><tr><td><code>total</code></td><td class="dim">Number</td><td><code>0</code></td><td>后端分页总条数（server 模式分页条显示用）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>row-click</code></td><td class="dim">(row, index)</td><td>行点击。</td></tr><tr><td><code>sort-change</code></td><td class="dim">{ key, dir }</td><td>排序变化（dir: asc / desc；key 空串 = 已取消排序）。server 模式下据此重新请求。</td></tr><tr><td><code>columns-change</code></td><td class="dim">Array</td><td>列定义变化（拖序 / 拖宽后提交，深拷贝叶子列）。</td></tr><tr><td><code>page-change</code></td><td class="dim">Number</td><td>页码变化。server 模式下据此请求对应页。</td></tr><tr><td><code>size-change</code></td><td class="dim">Number</td><td>每页条数变化。server 模式下据此重新请求。</td></tr><tr><td><code>selection-change</code></td><td class="dim">{ keys, rows }</td><td>勾选变化（勾行 / 全选 / 清空都发，rows 为当前数据中仍存在的选中行）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>resetSort()</code></td><td class="dim">void</td><td>取消排序，回到原始顺序。</td></tr><tr><td><code>resetPage()</code></td><td class="dim">void</td><td>回到第 1 页。</td></tr><tr><td><code>getColumns()</code></td><td class="dim">Array</td><td>取当前列定义（含拖序 / 拖宽后的状态）。</td></tr><tr><td><code>getSelection()</code></td><td class="dim">Array</td><td>当前勾选的行（按 rows 中仍存在的键过滤）。</td></tr><tr><td><code>getSelectionKeys()</code></td><td class="dim">Array</td><td>当前勾选的行键数组。</td></tr><tr><td><code>clearSelection()</code></td><td class="dim">void</td><td>清空勾选并发 selection-change。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Slots（插槽）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">作用域</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>cell:{key}</code></td><td class="dim">{ row, value, index }</td><td>按列 key 命名的单元格插槽，优先于默认文本渲染。</td></tr><tr><td><code>toolbar</code></td><td class="dim">—</td><td>表格上方区域（筛选条常放这里）。</td></tr><tr><td><code>empty</code></td><td class="dim">—</td><td>空态内容（覆盖 emptyText）。</td></tr></tbody></table>
+    </section>
+  </main>
+
+  <main class="doc" id="mypagerbar">
+    <h2>MyPagerBar</h2>
+    <p class="desc">分页工具栏：总条数 / 首末页 / 前后页 / 可点击跳转的页码（点一下变输入框，回车跳转）/ 每页条数。MyGridList 内置使用，也可独立用于任意分页场景。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>total</code></td><td class="dim">Number | String</td><td><code>0</code></td><td>符合条件的总条数（不是当页条数）。</td></tr><tr><td><code>page</code></td><td class="dim">Number | String</td><td><code>1</code></td><td>当前页码，从 1 起（v-model:page）。</td></tr><tr><td><code>pageSize</code></td><td class="dim">Number | String</td><td><code>10</code></td><td>每页条数（v-model:pageSize）。</td></tr><tr><td><code>pageSizes</code></td><td class="dim">Array</td><td><code>[5,10,20,50,100]</code></td><td>可选每页条数。</td></tr><tr><td><code>disabled</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>加载中禁用翻页。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:page</code></td><td class="dim">Number</td><td>页码变化（v-model:page）。</td></tr><tr><td><code>page-change</code></td><td class="dim">Number</td><td>页码变化。</td></tr><tr><td><code>update:pageSize</code></td><td class="dim">Number</td><td>每页条数变化（v-model:pageSize）。</td></tr><tr><td><code>size-change</code></td><td class="dim">Number</td><td>每页条数变化。</td></tr></tbody></table>
+    </section>
+    
+    
+  </main>
+
+  <main class="doc" id="mygridfilterbar">
+    <h2>MyGridFilterBar</h2>
+    <p class="desc">grid 列表的快速筛选条：N 个下拉（按剩余空间等比收缩）+ 高级搜索入口（带条件数徽章）+ 重置；范围条件以 chip 摘要展示、可单个移除或清空。与 useGridFilter 搭配使用。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>selects</code></td><td class="dim">Array</td><td><code>[]</code></td><td>下拉定义 [{ key, label?, allLabel?, allValue?, options? }]；options 不给时由 useGridFilter 按数据实际出现值生成选项。</td></tr><tr><td><code>values</code></td><td class="dim">Object</td><td><code>{}</code></td><td>各下拉当前值 { [key]: value }（v-model:values）。</td></tr><tr><td><code>selectOptions</code></td><td class="dim">Object</td><td><code>{}</code></td><td>下拉选项 { [key]: [{ value, label }] }（useGridFilter.selectOptions）。</td></tr><tr><td><code>chips</code></td><td class="dim">Array</td><td><code>[]</code></td><td>高级范围条件 chip [{ key, text }]（useGridFilter.chips）。</td></tr><tr><td><code>activeCount</code></td><td class="dim">Number</td><td><code>0</code></td><td>高级条件数（徽章）。</td></tr><tr><td><code>hasFilter</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>是否存在任何筛选条件（决定「重置」显隐）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:values</code></td><td class="dim">Object</td><td>下拉值变化（v-model:values）。</td></tr><tr><td><code>open-advanced</code></td><td class="dim">—</td><td>点击高级搜索入口。</td></tr><tr><td><code>reset-all</code></td><td class="dim">—</td><td>点击重置（清空全部筛选）。</td></tr><tr><td><code>remove-chip</code></td><td class="dim">key</td><td>移除单个范围条件 chip。</td></tr><tr><td><code>clear-chips</code></td><td class="dim">—</td><td>清空全部范围条件。</td></tr></tbody></table>
+    </section>
+    
+    
+  </main>
+
+  <main class="doc" id="mygridfilterdrawer">
+    <h2>MyGridFilterDrawer</h2>
+    <p class="desc">高级搜索面板：MyFloatPanel 悬浮（标题栏可拖动、右下角可拖尺寸、Esc 关闭），一行一字段的数值区间输入（留空为不限，非数字红边提示），重置 / 查询固定底部。改动即时生效（range-change），打开时自动补高到内容高度。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>visible</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>显隐（v-model:visible）。</td></tr><tr><td><code>fields</code></td><td class="dim">Array</td><td><code>[]</code></td><td>字段定义 [{ key, label, unit? }]，顺序即行顺序。</td></tr><tr><td><code>ranges</code></td><td class="dim">Object</td><td><code>{}</code></td><td>范围值 { [key]: { min, max } }，值为用户输入的原始字符串（useGridFilter.ranges）。</td></tr><tr><td><code>activeCount</code></td><td class="dim">Number</td><td><code>0</code></td><td>已设条件数（标题栏徽章）。</td></tr><tr><td><code>container</code></td><td class="dim">String</td><td><code>'body'</code></td><td>浮层挂载容器选择器；不存在时退回 body。</td></tr><tr><td><code>offset</code></td><td class="dim">Object</td><td><code>{ top: 12, left: 12 }</code></td><td>浮层在容器内的初始偏移。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:visible</code></td><td class="dim">Boolean</td><td>显隐变化（v-model:visible / Esc）。</td></tr><tr><td><code>range-change</code></td><td class="dim">{ key, which, value }</td><td>输入框变化（which: min / max）。</td></tr><tr><td><code>reset</code></td><td class="dim">—</td><td>点击重置。</td></tr><tr><td><code>apply</code></td><td class="dim">—</td><td>点击查询（通常同时关闭面板）。</td></tr></tbody></table>
+    </section>
+    
+    
+  </main>
+
+  <main class="doc" id="myphotoviewer">
+    <h2>MyPhotoViewer</h2>
+    <p class="desc">照片查看器：缩放（滚轮锚点缩放 / 双击 2.5 倍）/ 旋转 90° / 拖拽平移 / 加载进度 / 原图失败退缩略图 / WebGL 全景切换。标题 / 翻页 / 缩放工具合并底部一行（标题居左、翻页居中、工具居右）。背景、工具栏、导航、进度条等表面色全部走 --my-layout-* 主题变量，随 light / light-blue / dark 主题变化；叠在图片上的提示层保留深色。数据源两种：urls + titles 简写，或 items 条目（优先）。键盘：Esc 关闭 · ←→ 翻页 · +/- 缩放 · 0 复位。超大图在解码阶段按查看方式缩到上限（平面 8192 / 全景 4096）再显示。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>modelValue</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>显隐（v-model）；embedded 模式忽略（显隐由外层容器决定）。</td></tr><tr><td><code>urls</code></td><td class="dim">Array</td><td><code>[]</code></td><td>图片 URL 列表（未传 items 时使用）。</td></tr><tr><td><code>titles</code></td><td class="dim">Array</td><td><code>[]</code></td><td>与 urls 对齐的标题（用于全景文件名推断与标题栏显示）。</td></tr><tr><td><code>items</code></td><td class="dim">Array</td><td><code>[]</code></td><td>媒体条目 [{ url 原图, thumbUrl 缩略图, title, panorama: true|false|null }]，优先于 urls/titles；panorama 未标注时按文件名（Pano / 360）与尺寸推断。</td></tr><tr><td><code>initialIndex</code></td><td class="dim">Number</td><td><code>0</code></td><td>初始序号；配合 update:index 可做双向定位。</td></tr><tr><td><code>headers</code></td><td class="dim">Object | Function</td><td><code>null</code></td><td>图片下载请求头（Object 或 () =&gt; Object），媒体端点鉴权用。</td></tr><tr><td><code>embedded</code></td><td class="dim">Boolean</td><td><code>false</code></td><td>内嵌模式：填满外部容器（如 MyFloatPanel 内容区），不覆盖宿主，也不显示自身关闭按钮。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>update:modelValue</code></td><td class="dim">Boolean</td><td>显隐变化（v-model）。</td></tr><tr><td><code>update:index</code></td><td class="dim">Number</td><td>当前图片序号变化（翻页 / goTo）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
+      <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>goTo(i)</code></td><td class="dim">void</td><td>编程式切到指定图。</td></tr><tr><td><code>zoomIn() / zoomOut()</code></td><td class="dim">void</td><td>编程式缩放一级。</td></tr><tr><td><code>resetView()</code></td><td class="dim">void</td><td>复位缩放 / 旋转 / 平移。</td></tr></tbody></table>
+    </section>
+    
+  </main>
+
+  <main class="doc" id="mypanoramaviewer">
+    <h2>MyPanoramaViewer</h2>
+    <p class="desc">等距柱状全景查看器：原生 WebGL 渲染 equirectangular 投影，roll = 0（水平拖只改偏航，地平线保持水平）；滚轮缩放改水平视场，松手带惯性。纹理边长上限 4096，超限自动缩放。</p>
+    
+    <section>
+      <h3>Props（属性）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-type">类型</th><th class="c-def">默认</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>url</code></td><td class="dim">String</td><td><code>''</code></td><td>全景原图地址（未传 bitmap 时自行加载）。</td></tr><tr><td><code>bitmap</code></td><td class="dim">Object</td><td><code>null</code></td><td>已按纹理上限缩小的 ImageBitmap（usePhotoSource 预解码产物，优先于 url）。</td></tr></tbody></table>
+    </section>
+    
+    <section>
+      <h3>Emits（事件）</h3>
+      <table><thead><tr><th class="c-name">名称</th><th class="c-payload">载荷</th><th class="">说明</th></tr></thead>
+      <tbody><tr><td><code>error</code></td><td class="dim">—</td><td>WebGL 初始化失败 / 纹理上传失败（调用方应退回平面查看）。</td></tr></tbody></table>
+    </section>
+    
+    
+  </main>
+
   <main class="doc" id="composables-组合式函数-">
     <h2>Composables（组合式函数）</h2>
-    <p class="desc">主题、布局注册表、面板参数归一化等工具。</p>
+    <p class="desc">主题、布局注册表、面板参数归一化、数据列表筛选与分页、照片加载等工具。</p>
     
     
     
     <section>
       <h3>Methods（defineExpose 暴露方法，通过 ref 调用）</h3>
       <table><thead><tr><th class="c-sig">签名</th><th class="c-ret">返回</th><th class="">说明</th></tr></thead>
-      <tbody><tr><td><code>import { normalizeTheme, themeClass, useThemeContext, THEMES, DEFAULT_THEME } from '.../composables/theme.js'</code></td><td class="dim">—</td><td>主题工具：normalizeTheme(str) 归一化；themeClass(theme) 返回类名；useThemeContext(props) 解析自身与父级主题。</td></tr><tr><td><code>import { ROOT_LAYOUT_ID, genLayoutId, makeChildLayoutId, registerLayout, unregisterLayout, getLayout, hasLayout, listLayoutIds } from '.../composables/layoutRegistry.js'</code></td><td class="dim">—</td><td>布局注册表：用于嵌套布局 / 面板反查所属布局。makeChildLayoutId(parent, region, name) 生成子布局 id。</td></tr><tr><td><code>import { normalizePanelItem, toPanelProps, normalizeMaxType, REGION_DEFAULTS, PANEL_DEFAULTS, REGION_SHOW_DEFAULTS, REGION_SIZE_DEFAULTS } from '.../composables/panelItem.js'</code></td><td class="dim">—</td><td>面板 / 区域 item 参数工具：归一化与挑选可 v-bind 的面板参数。</td></tr></tbody></table>
+      <tbody><tr><td><code>import { normalizeTheme, themeClass, useThemeContext, THEMES, DEFAULT_THEME } from '.../composables/theme.js'</code></td><td class="dim">—</td><td>主题工具：normalizeTheme(str) 归一化；themeClass(theme) 返回类名；useThemeContext(props) 解析自身与父级主题。</td></tr><tr><td><code>import { ROOT_LAYOUT_ID, genLayoutId, makeChildLayoutId, registerLayout, unregisterLayout, getLayout, hasLayout, listLayoutIds } from '.../composables/layoutRegistry.js'</code></td><td class="dim">—</td><td>布局注册表：用于嵌套布局 / 面板反查所属布局。makeChildLayoutId(parent, region, name) 生成子布局 id。</td></tr><tr><td><code>import { normalizePanelItem, toPanelProps, normalizeMaxType, REGION_DEFAULTS, PANEL_DEFAULTS, REGION_SHOW_DEFAULTS, REGION_SIZE_DEFAULTS } from '.../composables/panelItem.js'</code></td><td class="dim">—</td><td>面板 / 区域 item 参数工具：归一化与挑选可 v-bind 的面板参数。</td></tr><tr><td><code>import { useGridFilter } from '.../composables/useGridFilter.js'</code></td><td class="dim">—</td><td>grid 筛选：selects（快速下拉，options 不给时按数据生成选项）+ ranges（数值范围）配置驱动，返回 values / ranges / selectOptions / chips / activeCount / hasFilter / signature / filtered / setSelect / setRange / removeChip / clearChips / resetAll / selects / rangeFields。</td></tr><tr><td><code>import { useLocalPager } from '.../composables/useLocalPager.js'</code></td><td class="dim">—</td><td>本地分页：全量数组按页切片，返回 page / pageSize / total / pageCount / rows / offset / reset；支持 resetKeys（任一变化回第 1 页）。</td></tr><tr><td><code>import { useGridColumnControls } from '.../composables/useGridColumnControls.js'</code></td><td class="dim">—</td><td>表格列控制：列拖序 / 列宽拖拽 / 表头三态排序（返回 columns / sortKey / sortDir / sortRows / 各表头事件处理等）。</td></tr><tr><td><code>import { usePhotoSource } from '.../composables/usePhotoSource.js'</code></td><td class="dim">—</td><td>照片原图加载：下载进度 / AbortSignal 取消 / 缩略图降级 / 超大图按查看方式（平面 8192 / 全景 4096）预解码缩小，返回 loading / progressText / displayUrl / panoBitmap / flatBitmap / load / retarget / dispose 等。</td></tr></tbody></table>
     </section>
     
   </main></div>
