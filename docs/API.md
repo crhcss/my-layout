@@ -1,8 +1,8 @@
 # @crhcss/my-layout API 文档
 
-> 版本 v1.2.0 · 生成自 src/mylayout/composables/apiDocs.js（npm run build:docs）
+> 版本 v2.0.0 · 生成自 src/mylayout/composables/apiDocs.js（npm run build:docs）
 
-**组件索引**：[MyBorderLayout](#myborderlayout) · [MyMainFrame](#mymainframe) · [MyPanel](#mypanel) · [MyPanelContent](#mypanelcontent) · [MyTabs](#mytabs) · [MySplitter](#mysplitter) · [MyFloatPanel](#myfloatpanel) · [MyGridLayout](#mygridlayout) · [Composables（组合式函数）](#composables-组合式函数-)
+**组件索引**：[MyBorderLayout](#myborderlayout) · [MyMainFrame](#mymainframe) · [MyPanel](#mypanel) · [MyPanelContent](#mypanelcontent) · [MyTabs](#mytabs) · [MySplitter](#mysplitter) · [MyFloatPanel](#myfloatpanel) · [MyGridLayout](#mygridlayout) · [MyGridList](#mygridlist) · [MyPagerBar](#mypagerbar) · [MyGridFilterBar](#mygridfilterbar) · [MyGridFilterDrawer](#mygridfilterdrawer) · [MyPhotoViewer](#myphotoviewer) · [MyPanoramaViewer](#mypanoramaviewer) · [Composables（组合式函数）](#composables-组合式函数-)
 
 ## MyBorderLayout
 
@@ -311,6 +311,7 @@
 | --- | --- | --- | --- |
 | `title` | String | `''` | 标题。 |
 | `hasTitle` | Boolean | `true` | 是否显示标题栏。 |
+| `padding` | Boolean | `true` | 内容区 16px 内边距；内容自带布局（如内嵌 MyPhotoViewer）时关掉。 |
 | `border` | Boolean | `true` | 是否显示外边框。 |
 | `close` | Boolean | `true` | 是否显示关闭按钮。 |
 | `max` | Boolean | `true` | 是否显示最大化按钮。 |
@@ -395,9 +396,185 @@
 | --- | --- | --- |
 | `{cell._key}` | { cell } | 按单元格 key（默认 name）命名的具名插槽。 |
 
+## MyGridList
+
+grid 数据列表：多级表头（children 分组列）/ 后端分页 / 列锁定（fixed left/right）/ 复选列 / 序号列 / 斑马纹 / 表头列分隔 / 操作列前置，列拖拽排序 / 列宽拖拽 / 表头三态排序 / 加载遮罩 / 空态。表头 / 表体分离滚动：纵向滚动条只在表体，表头区不出现滚动条。列定义 columns 是表头、colgroup 与排序的唯一来源；单元格默认按 row[col.key] 渲染文本，特殊列（操作列、徽章列等）用 cell:{key} 插槽自定义。配色全部走 --my-layout-* 主题变量。配套 useGridFilter + MyGridFilterBar / MyGridFilterDrawer 做筛选。
+
+### Props（属性）
+
+| 名称 | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `columns` | Array | `—` | 列定义 [{ key, label, width, num?, sortable?, hint?, minWidth?, children?, fixed? }]，必传。num=数字列（右对齐 + 等宽数字）；sortable=表头可点排序；hint=表头悬浮提示。children 非空 = 分组列（两级表头），取值 / 排序 / 列宽都落在叶子列上，分组模式自动禁列拖序。fixed=列锁定（left / right，贴边固定 + 分隔投影，不参与拖序；复选 / 序号列始终锁定最左）。顺序即列顺序（操作列放首位即前置）。 |
+| `rows` | Array | `[]` | 本地分页：全量数据（分页只切显示，排序在分页之前做）；server 模式：当前页数据。 |
+| `rowKey` | String \| Function | `'id'` | 行键：字段名或 (row) => key，用于行选中与去重。 |
+| `selectedKey` | String \| Number | `null` | 行选中高亮的 key（与 rowKey 取值比较，选中行左侧亮蓝竖条）。 |
+| `rowClass` | Function | `null` | 行附加 class：(row, index) => string \| object。 |
+| `sortValue` | Function | `null` | 排序取值 (row, key) => number \| string；缺省按 row[key]，数字按数值比，缺值恒排末尾。 |
+| `loading` | Boolean | `false` | 加载中：显示遮罩并禁用分页。 |
+| `emptyText` | String | `''` | 空态文案（empty 插槽优先）。 |
+| `pager` | Boolean | `true` | 是否内置分页条（MyPagerBar）。 |
+| `pageSize` | Number | `10` | 每页条数。 |
+| `pageSizes` | Array | `[5,10,20,50,100]` | 可选每页条数。 |
+| `selection` | Boolean | `true` | 复选列开关（默认开启，首列）：自绘 checkbox（随主题，全选白勾 / 半选横线），表头全选只作用于当前页，半选态自动显示；勾选跨页 / 翻页 / 排序保留，勾选行淡主色底且分隔线融入底色。 |
+| `index` | Boolean | `true` | 序号列开关（默认开启，复选列之后）：显示全局序号（翻页 / 排序 / 后端分页后连续），表头为「序号」。 |
+| `sortable` | Boolean | `true` | 全局排序开关（默认开启；列级 sortable 仍需为 true 才可排序）。可排序列表头常显上下双箭头，悬浮加深、激活一侧主色高亮。 |
+| `columnDrag` | Boolean | `true` | 列位置拖动开关（默认开启，按住表头拖动调整列顺序）；多级表头下自动禁用。 |
+| `server` | Boolean | `false` | 后端分页模式：rows 即当前页数据，翻页 / 排序 / 每页条数只发事件由外部加载，本地不切片不排序。 |
+| `total` | Number | `0` | 后端分页总条数（server 模式分页条显示用）。 |
+
+### Emits（事件）
+
+| 名称 | 载荷 | 说明 |
+| --- | --- | --- |
+| `row-click` | (row, index) | 行点击。 |
+| `sort-change` | { key, dir } | 排序变化（dir: asc / desc；key 空串 = 已取消排序）。server 模式下据此重新请求。 |
+| `columns-change` | Array | 列定义变化（拖序 / 拖宽后提交，深拷贝叶子列）。 |
+| `page-change` | Number | 页码变化。server 模式下据此请求对应页。 |
+| `size-change` | Number | 每页条数变化。server 模式下据此重新请求。 |
+| `selection-change` | { keys, rows } | 勾选变化（勾行 / 全选 / 清空都发，rows 为当前数据中仍存在的选中行）。 |
+
+### Methods（defineExpose 暴露方法，通过 ref 调用）
+
+| 签名 | 返回 | 说明 |
+| --- | --- | --- |
+| `resetSort()` | void | 取消排序，回到原始顺序。 |
+| `resetPage()` | void | 回到第 1 页。 |
+| `getColumns()` | Array | 取当前列定义（含拖序 / 拖宽后的状态）。 |
+| `getSelection()` | Array | 当前勾选的行（按 rows 中仍存在的键过滤）。 |
+| `getSelectionKeys()` | Array | 当前勾选的行键数组。 |
+| `clearSelection()` | void | 清空勾选并发 selection-change。 |
+
+### Slots（插槽）
+
+| 名称 | 作用域 | 说明 |
+| --- | --- | --- |
+| `cell:{key}` | { row, value, index } | 按列 key 命名的单元格插槽，优先于默认文本渲染。 |
+| `toolbar` | — | 表格上方区域（筛选条常放这里）。 |
+| `empty` | — | 空态内容（覆盖 emptyText）。 |
+
+## MyPagerBar
+
+分页工具栏：总条数 / 首末页 / 前后页 / 可点击跳转的页码（点一下变输入框，回车跳转）/ 每页条数。MyGridList 内置使用，也可独立用于任意分页场景。
+
+### Props（属性）
+
+| 名称 | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `total` | Number \| String | `0` | 符合条件的总条数（不是当页条数）。 |
+| `page` | Number \| String | `1` | 当前页码，从 1 起（v-model:page）。 |
+| `pageSize` | Number \| String | `10` | 每页条数（v-model:pageSize）。 |
+| `pageSizes` | Array | `[5,10,20,50,100]` | 可选每页条数。 |
+| `disabled` | Boolean | `false` | 加载中禁用翻页。 |
+
+### Emits（事件）
+
+| 名称 | 载荷 | 说明 |
+| --- | --- | --- |
+| `update:page` | Number | 页码变化（v-model:page）。 |
+| `page-change` | Number | 页码变化。 |
+| `update:pageSize` | Number | 每页条数变化（v-model:pageSize）。 |
+| `size-change` | Number | 每页条数变化。 |
+
+## MyGridFilterBar
+
+grid 列表的快速筛选条：N 个下拉（按剩余空间等比收缩）+ 高级搜索入口（带条件数徽章）+ 重置；范围条件以 chip 摘要展示、可单个移除或清空。与 useGridFilter 搭配使用。
+
+### Props（属性）
+
+| 名称 | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `selects` | Array | `[]` | 下拉定义 [{ key, label?, allLabel?, allValue?, options? }]；options 不给时由 useGridFilter 按数据实际出现值生成选项。 |
+| `values` | Object | `{}` | 各下拉当前值 { [key]: value }（v-model:values）。 |
+| `selectOptions` | Object | `{}` | 下拉选项 { [key]: [{ value, label }] }（useGridFilter.selectOptions）。 |
+| `chips` | Array | `[]` | 高级范围条件 chip [{ key, text }]（useGridFilter.chips）。 |
+| `activeCount` | Number | `0` | 高级条件数（徽章）。 |
+| `hasFilter` | Boolean | `false` | 是否存在任何筛选条件（决定「重置」显隐）。 |
+
+### Emits（事件）
+
+| 名称 | 载荷 | 说明 |
+| --- | --- | --- |
+| `update:values` | Object | 下拉值变化（v-model:values）。 |
+| `open-advanced` | — | 点击高级搜索入口。 |
+| `reset-all` | — | 点击重置（清空全部筛选）。 |
+| `remove-chip` | key | 移除单个范围条件 chip。 |
+| `clear-chips` | — | 清空全部范围条件。 |
+
+## MyGridFilterDrawer
+
+高级搜索面板：MyFloatPanel 悬浮（标题栏可拖动、右下角可拖尺寸、Esc 关闭），一行一字段的数值区间输入（留空为不限，非数字红边提示），重置 / 查询固定底部。改动即时生效（range-change），打开时自动补高到内容高度。
+
+### Props（属性）
+
+| 名称 | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `visible` | Boolean | `false` | 显隐（v-model:visible）。 |
+| `fields` | Array | `[]` | 字段定义 [{ key, label, unit? }]，顺序即行顺序。 |
+| `ranges` | Object | `{}` | 范围值 { [key]: { min, max } }，值为用户输入的原始字符串（useGridFilter.ranges）。 |
+| `activeCount` | Number | `0` | 已设条件数（标题栏徽章）。 |
+| `container` | String | `'body'` | 浮层挂载容器选择器；不存在时退回 body。 |
+| `offset` | Object | `{ top: 12, left: 12 }` | 浮层在容器内的初始偏移。 |
+
+### Emits（事件）
+
+| 名称 | 载荷 | 说明 |
+| --- | --- | --- |
+| `update:visible` | Boolean | 显隐变化（v-model:visible / Esc）。 |
+| `range-change` | { key, which, value } | 输入框变化（which: min / max）。 |
+| `reset` | — | 点击重置。 |
+| `apply` | — | 点击查询（通常同时关闭面板）。 |
+
+## MyPhotoViewer
+
+照片查看器：缩放（滚轮锚点缩放 / 双击 2.5 倍）/ 旋转 90° / 拖拽平移 / 加载进度 / 原图失败退缩略图 / WebGL 全景切换。标题 / 翻页 / 缩放工具合并底部一行（标题居左、翻页居中、工具居右）。背景、工具栏、导航、进度条等表面色全部走 --my-layout-* 主题变量，随 light / light-blue / dark 主题变化；叠在图片上的提示层保留深色。数据源两种：urls + titles 简写，或 items 条目（优先）。键盘：Esc 关闭 · ←→ 翻页 · +/- 缩放 · 0 复位。超大图在解码阶段按查看方式缩到上限（平面 8192 / 全景 4096）再显示。
+
+### Props（属性）
+
+| 名称 | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `modelValue` | Boolean | `false` | 显隐（v-model）；embedded 模式忽略（显隐由外层容器决定）。 |
+| `urls` | Array | `[]` | 图片 URL 列表（未传 items 时使用）。 |
+| `titles` | Array | `[]` | 与 urls 对齐的标题（用于全景文件名推断与标题栏显示）。 |
+| `items` | Array | `[]` | 媒体条目 [{ url 原图, thumbUrl 缩略图, title, panorama: true\|false\|null }]，优先于 urls/titles；panorama 未标注时按文件名（Pano / 360）与尺寸推断。 |
+| `initialIndex` | Number | `0` | 初始序号；配合 update:index 可做双向定位。 |
+| `headers` | Object \| Function | `null` | 图片下载请求头（Object 或 () => Object），媒体端点鉴权用。 |
+| `embedded` | Boolean | `false` | 内嵌模式：填满外部容器（如 MyFloatPanel 内容区），不覆盖宿主，也不显示自身关闭按钮。 |
+
+### Emits（事件）
+
+| 名称 | 载荷 | 说明 |
+| --- | --- | --- |
+| `update:modelValue` | Boolean | 显隐变化（v-model）。 |
+| `update:index` | Number | 当前图片序号变化（翻页 / goTo）。 |
+
+### Methods（defineExpose 暴露方法，通过 ref 调用）
+
+| 签名 | 返回 | 说明 |
+| --- | --- | --- |
+| `goTo(i)` | void | 编程式切到指定图。 |
+| `zoomIn() / zoomOut()` | void | 编程式缩放一级。 |
+| `resetView()` | void | 复位缩放 / 旋转 / 平移。 |
+
+## MyPanoramaViewer
+
+等距柱状全景查看器：原生 WebGL 渲染 equirectangular 投影，roll = 0（水平拖只改偏航，地平线保持水平）；滚轮缩放改水平视场，松手带惯性。纹理边长上限 4096，超限自动缩放。
+
+### Props（属性）
+
+| 名称 | 类型 | 默认 | 说明 |
+| --- | --- | --- | --- |
+| `url` | String | `''` | 全景原图地址（未传 bitmap 时自行加载）。 |
+| `bitmap` | Object | `null` | 已按纹理上限缩小的 ImageBitmap（usePhotoSource 预解码产物，优先于 url）。 |
+
+### Emits（事件）
+
+| 名称 | 载荷 | 说明 |
+| --- | --- | --- |
+| `error` | — | WebGL 初始化失败 / 纹理上传失败（调用方应退回平面查看）。 |
+
 ## Composables（组合式函数）
 
-主题、布局注册表、面板参数归一化等工具。
+主题、布局注册表、面板参数归一化、数据列表筛选与分页、照片加载等工具。
 
 ### Methods（defineExpose 暴露方法，通过 ref 调用）
 
@@ -406,3 +583,7 @@
 | `import { normalizeTheme, themeClass, useThemeContext, THEMES, DEFAULT_THEME } from '.../composables/theme.js'` | — | 主题工具：normalizeTheme(str) 归一化；themeClass(theme) 返回类名；useThemeContext(props) 解析自身与父级主题。 |
 | `import { ROOT_LAYOUT_ID, genLayoutId, makeChildLayoutId, registerLayout, unregisterLayout, getLayout, hasLayout, listLayoutIds } from '.../composables/layoutRegistry.js'` | — | 布局注册表：用于嵌套布局 / 面板反查所属布局。makeChildLayoutId(parent, region, name) 生成子布局 id。 |
 | `import { normalizePanelItem, toPanelProps, normalizeMaxType, REGION_DEFAULTS, PANEL_DEFAULTS, REGION_SHOW_DEFAULTS, REGION_SIZE_DEFAULTS } from '.../composables/panelItem.js'` | — | 面板 / 区域 item 参数工具：归一化与挑选可 v-bind 的面板参数。 |
+| `import { useGridFilter } from '.../composables/useGridFilter.js'` | — | grid 筛选：selects（快速下拉，options 不给时按数据生成选项）+ ranges（数值范围）配置驱动，返回 values / ranges / selectOptions / chips / activeCount / hasFilter / signature / filtered / setSelect / setRange / removeChip / clearChips / resetAll / selects / rangeFields。 |
+| `import { useLocalPager } from '.../composables/useLocalPager.js'` | — | 本地分页：全量数组按页切片，返回 page / pageSize / total / pageCount / rows / offset / reset；支持 resetKeys（任一变化回第 1 页）。 |
+| `import { useGridColumnControls } from '.../composables/useGridColumnControls.js'` | — | 表格列控制：列拖序 / 列宽拖拽 / 表头三态排序（返回 columns / sortKey / sortDir / sortRows / 各表头事件处理等）。 |
+| `import { usePhotoSource } from '.../composables/usePhotoSource.js'` | — | 照片原图加载：下载进度 / AbortSignal 取消 / 缩略图降级 / 超大图按查看方式（平面 8192 / 全景 4096）预解码缩小，返回 loading / progressText / displayUrl / panoBitmap / flatBitmap / load / retarget / dispose 等。 |
